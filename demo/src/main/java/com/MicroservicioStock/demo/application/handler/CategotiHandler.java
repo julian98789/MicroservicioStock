@@ -17,7 +17,6 @@ public class CategotiHandler implements ICategoriHandler{
 
     private final ICategoriServicePort iCategoriServicePort;
     private final CategoriRequestMappper categoriRequestMappper;
-    private final CategoriResponseMapper categoriResponseMapper;
 
 
     @Override

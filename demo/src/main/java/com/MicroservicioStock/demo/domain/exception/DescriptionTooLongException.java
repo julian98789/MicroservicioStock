@@ -1,4 +1,4 @@
-package com.MicroservicioStock.demo.infrastructure.exception.custom;
+package com.MicroservicioStock.demo.domain.exception;
 
 public class DescriptionTooLongException extends RuntimeException {
     public DescriptionTooLongException(String message) {

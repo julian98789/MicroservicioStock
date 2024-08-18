@@ -1,5 +1,8 @@
 package com.MicroservicioStock.demo.domain.model;
 
+import com.MicroservicioStock.demo.domain.exception.DescriptionTooLongException;
+import com.MicroservicioStock.demo.domain.exception.NameTooLongException;
+
 public class Categori {
     private Long id;
     private String name;
