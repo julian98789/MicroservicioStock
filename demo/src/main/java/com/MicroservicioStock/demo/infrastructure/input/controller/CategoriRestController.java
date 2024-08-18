@@ -1,6 +1,7 @@
 package com.MicroservicioStock.demo.infrastructure.input.controller;
 
 import com.MicroservicioStock.demo.application.dto.CategoriRequest;
+import com.MicroservicioStock.demo.application.dto.CategoriResponse;
 import com.MicroservicioStock.demo.application.handler.ICategoriHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class CategoriRestController {
     private final ICategoriHandler iCategoriHandler;
 
     @PostMapping()
-    public ResponseEntity<Void> saveCategori (@RequestBody CategoriRequest categoriRequest){
-        iCategoriHandler.saveCategori(categoriRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<CategoriResponse> saveCategori(@RequestBody CategoriRequest categoriRequest) {
+        CategoriResponse savedCategori = iCategoriHandler.saveCategori(categoriRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategori);
     }
 }

@@ -14,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CategotiHandler implements ICategoriHandler{
-
     private final ICategoriServicePort iCategoriServicePort;
     private final CategoriRequestMappper categoriRequestMappper;
-
+    private final CategoriResponseMapper categoriResponseMapper;
 
     @Override
-    public void saveCategori(CategoriRequest categoriRequest) {
+    public CategoriResponse saveCategori(CategoriRequest categoriRequest) {
         Categori categori = categoriRequestMappper.categoriRequestTocategori(categoriRequest);
-        iCategoriServicePort.saveCategori(categori);
+        Categori savedCategori = iCategoriServicePort.saveCategori(categori);
+        return categoriResponseMapper.categoriResponseToresponse(savedCategori);
     }
 }

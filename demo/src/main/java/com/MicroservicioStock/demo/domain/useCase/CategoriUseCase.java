@@ -17,7 +17,7 @@ public class CategoriUseCase implements ICategoriServicePort {
     }
 
     @Override
-    public void saveCategori(Categori categori) {
+    public Categori saveCategori(Categori categori) {
         if (categori.getName() == null || categori.getName().isEmpty()) {
             throw new NameCannotBeEmptyException("El nombre no puede estar vacio");
         }
@@ -30,7 +30,7 @@ public class CategoriUseCase implements ICategoriServicePort {
         if (categori.getDescription().length() > 90) {
             throw new DescriptionTooLongException("La descripción no puede tener mas de 90 caracteres");
         }
-        iCategoriPersistencePort.saveCategori(categori);
+        return iCategoriPersistencePort.saveCategori(categori);
     }
     
 }
