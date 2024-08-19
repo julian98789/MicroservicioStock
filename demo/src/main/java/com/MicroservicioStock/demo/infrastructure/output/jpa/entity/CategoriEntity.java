@@ -23,7 +23,7 @@ public class CategoriEntity {
 
     @NotBlank
     @Size(max = 50)
-    @Column(name = "name",  length = 50)
+    @Column(name = "name",  length = 50, unique = true)
     private String name;
 
     @NotBlank

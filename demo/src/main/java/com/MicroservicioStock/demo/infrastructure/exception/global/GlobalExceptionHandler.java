@@ -1,52 +1,41 @@
 package com.MicroservicioStock.demo.infrastructure.exception.global;
 
 
-import com.MicroservicioStock.demo.domain.exception.DescriptionCannotBeEmptyException;
-import com.MicroservicioStock.demo.domain.exception.DescriptionTooLongException;
-import com.MicroservicioStock.demo.domain.exception.NameCannotBeEmptyException;
-import com.MicroservicioStock.demo.domain.exception.NameTooLongException;
+
 import com.MicroservicioStock.demo.infrastructure.exception.custom.CategoriAlreadyExistsException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CategoriAlreadyExistsException.class)
-    public ResponseEntity<String> handleCategoriAlreadyExistsException(CategoriAlreadyExistsException ex) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ex.getMessage());
+    public ResponseEntity<String> handleCategoryAlreadyExists(CategoriAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(DescriptionTooLongException.class)
-    public ResponseEntity<String> handleDescriptionTooLongException(DescriptionTooLongException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
-    }
 
-    @ExceptionHandler(NameTooLongException.class)
-    public ResponseEntity<String> handleNameTooLongException(NameTooLongException ex) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(NameCannotBeEmptyException.class)
-    public ResponseEntity<String> handleNameCannotBeEmptyException(NameCannotBeEmptyException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(DescriptionCannotBeEmptyException.class)
-    public ResponseEntity<String> handleDescriptionCannotBeEmptyException(DescriptionCannotBeEmptyException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errors);
     }
 
 }
