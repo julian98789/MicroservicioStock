@@ -7,6 +7,7 @@ import com.MicroservicioStock.demo.infrastructure.output.jpa.adapter.CategoriaJp
 import com.MicroservicioStock.demo.infrastructure.output.jpa.mapper.CategoriEntityMapper;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.repository.ICategoriRepository;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,5 +26,13 @@ public class BeanConfiguration {
     @Bean
     public ICategoriServicePort categoriServicePort(){
         return new CategoriUseCase(categoriPersistencePort());
+    }
+
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .pathsToMatch("/**")
+                .build();
     }
 }
