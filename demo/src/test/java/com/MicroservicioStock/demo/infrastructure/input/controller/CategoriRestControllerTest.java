@@ -2,33 +2,39 @@ package com.MicroservicioStock.demo.infrastructure.input.controller;
 
 import com.MicroservicioStock.demo.application.dto.CategoriRequest;
 import com.MicroservicioStock.demo.application.dto.CategoriResponse;
-import com.MicroservicioStock.demo.application.handler.CategotiHandler;
-import com.MicroservicioStock.demo.infrastructure.output.jpa.repository.ICategoriRepository;
+import com.MicroservicioStock.demo.application.handler.CategoriHandler;
+import com.MicroservicioStock.demo.application.handler.ICategoriHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@WebMvcTest(CategoriRestController.class)
 class CategoriRestControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-
     @Mock
-    private CategotiHandler categoriHandler;
+    private CategoriHandler categoriHandler;
+
+    @MockBean
+    private ICategoriHandler iCategoriHandler;
 
     @InjectMocks
     private CategoriRestController categoriRestController;
@@ -38,83 +44,105 @@ class CategoriRestControllerTest {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(categoriRestController).build();
     }
+
+
     @Test
-    @DisplayName("Deberia retornar HTTP 201 cuando los datos ingresados sean validos")
-    void saveCategori_ShouldReturnCreatedStatus_WhenCategoryIsValid() {
+    @DisplayName("Should successfully save a category and return HTTP 201")
+    public void testSaveCategori_Success() throws Exception {
         // Dado
         CategoriRequest request = new CategoriRequest();
-        request.setName("Electronics");
-        request.setDescription("Devices and gadgets");
+        request.setName("Nueva Categoría");
+        request.setDescription("Descripción de la nueva categoría");
 
         CategoriResponse response = new CategoriResponse();
-        response.setName("Electronics");
-        response.setDescription("Devices and gadgets");
-
-        when(categoriHandler.saveCategori(request)).thenReturn(response);
+        response.setName("Nueva Categoría");
 
         // Cuando
-        ResponseEntity<CategoriResponse> result = categoriRestController.saveCategori(request);
+        when(iCategoriHandler.saveCategori(any(CategoriRequest.class))).thenReturn(response);
 
         // Entonces
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertEquals(response, result.getBody());
+        mockMvc.perform(post("/categori")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Nueva Categoría\", \"description\":\"Descripción de la nueva categoría\"}")) // JSON del CategoriRequest
+                .andExpect(status().isCreated());
+
     }
 
     @Test
-    @DisplayName("Deberia retornar HTTP 400 cuando el cuerpo de la solicitud este vacio")
-    void shouldReturnBadRequestWhenRequestBodyIsEmpty() throws Exception {
-        // Dado un cuerpo vacio
+    @DisplayName("Should return HTTP 400 when the request body is empty")
+    void testSaveCategori_EmptyRequest() throws Exception {
+        // Dado
         String emptyRequestBody = "";
 
-        // Cuando se hace una solicitud POST con un cuerpo vacio
-        mockMvc.perform(MockMvcRequestBuilders.post("/categori")
+        // Cuando
+        mockMvc.perform(post("/categori")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(emptyRequestBody))
-                // Entonces se espera un estado 400 Bad Request
+                // Entonces
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Deberia retornar HTTP 400 cuando los campos esten vacios")
-    void shouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
-        // Dado un CategoriRequest con campos vacios
+    @DisplayName("Should return HTTP 400 when the fields are empty")
+    void testSaveCategori_EmptyFields() throws Exception {
+        // Dado
         String requestBodyWithEmptyFields = "{ \"name\": \"\", \"description\": \"\" }";
 
-        // Cuando se hace una solicitud POST con campos vacios
-        mockMvc.perform(MockMvcRequestBuilders.post("/categori")
+        // Cuando
+        mockMvc.perform(post("/categori")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyWithEmptyFields))
-                // Entonces se espera un estado 400 Bad Request
+                // Entonces
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Deberia retornar HTTP 400 cuando el nombre exceda los 50 caracteres")
-    void shouldReturnBadRequestWhenNameExceedsMaxLength() throws Exception {
-        // Dado un CategoriRequest con un nombre de mas de 50 caracteres
-        String longName = "A".repeat(51);  // Crea un nombre con 51 caracteres
+    @DisplayName("Should return HTTP 400 when the name exceeds 50 characters")
+    void testSaveCategori_NameTooLong() throws Exception {
+        // Dado
+        String longName = "A".repeat(51);
         String requestBodyWithLongName = String.format("{ \"name\": \"%s\", \"description\": \"Valid description\" }", longName);
 
-        // Cuando se hace una solicitud POST con un nombre largo
-        mockMvc.perform(MockMvcRequestBuilders.post("/categori")
+        // Cuando
+        mockMvc.perform(post("/categori")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyWithLongName))
-                // Entonces se espera un estado 400 Bad Request
+                // Entonces
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Debería retornar HTTP 400 y cuando la descripción exceda los 90 caracteres")
-    void shouldReturnBadRequestWhenDescriptionExceedsMaxLength() throws Exception {
-        // Dado un CategoriRequest con una descripción de más de 90 caracteres
+    @DisplayName("Should return HTTP 400 when the description exceeds 90 characters")
+    void testSaveCategori_DescriptionTooLong() throws Exception {
+        // Dado
         String longDescription = "A".repeat(91);
         String requestBodyWithLongDescription = String.format("{ \"name\": \"Valid name\", \"description\": \"%s\" }", longDescription);
 
-        // Cuando se hace una solicitud POST con una descripción larga
-        mockMvc.perform(MockMvcRequestBuilders.post("/categori")
+        // Cuando
+        mockMvc.perform(post("/categori")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyWithLongDescription))
-                // Entonces se espera un estado 400 Bad Request
+                // Entonces
+                .andExpect(status().isBadRequest());
+
+    }
+    @Test
+    @DisplayName("Should return HTTP 400 when the category already exists")
+    public void testSaveCategori_CategoryAlreadyExists() throws Exception {
+
+        // Dado
+        CategoriRequest request = new CategoriRequest();
+        request.setName("Electronics");
+        String requestJson = new ObjectMapper().writeValueAsString(request);
+
+        // Cuando
+        when(iCategoriHandler.saveCategori(any(CategoriRequest.class)))
+                .thenThrow(new IllegalArgumentException("La categoría ya existe"));
+
+        mockMvc.perform(post("/categori")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                // Entonces
                 .andExpect(status().isBadRequest());
 
     }

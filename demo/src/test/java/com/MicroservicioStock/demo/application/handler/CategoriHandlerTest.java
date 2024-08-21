@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-class CategotiHandlerTest {
+class CategoriHandlerTest {
 
     @Mock
     private ICategoriServicePort iCategoriServicePort;
@@ -28,7 +28,7 @@ class CategotiHandlerTest {
     private CategoriResponseMapper categoriResponseMapper;
 
     @InjectMocks
-    private CategotiHandler categoriHandler;
+    private CategoriHandler categoriHandler;
 
     @BeforeEach
     void setUp() {

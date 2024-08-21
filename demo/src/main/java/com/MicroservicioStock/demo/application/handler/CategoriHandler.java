@@ -13,13 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CategotiHandler implements ICategoriHandler{
+public class CategoriHandler implements ICategoriHandler{
     private final ICategoriServicePort iCategoriServicePort;
     private final CategoriRequestMappper categoriRequestMappper;
     private final CategoriResponseMapper categoriResponseMapper;
 
     @Override
     public CategoriResponse saveCategori(CategoriRequest categoriRequest) {
+        String name = categoriRequest.getName();
+        if (iCategoriServicePort.existsByName(name)) {
+            throw new IllegalArgumentException("Categoría con nombre '" + name + "' ya existe.");
+        }
         Categori categori = categoriRequestMappper.categoriRequestTocategori(categoriRequest);
         Categori savedCategori = iCategoriServicePort.saveCategori(categori);
         return categoriResponseMapper.categoriResponseToresponse(savedCategori);

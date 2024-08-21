@@ -2,7 +2,7 @@ package com.MicroservicioStock.demo.infrastructure.exception.global;
 
 
 
-import com.MicroservicioStock.demo.infrastructure.exception.custom.CategoriAlreadyExistsException;
+import com.MicroservicioStock.demo.domain.exception.custom.CategoriAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +17,8 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(CategoriAlreadyExistsException.class)
-    public ResponseEntity<String> handleCategoryAlreadyExists(CategoriAlreadyExistsException ex) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 

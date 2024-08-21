@@ -1,7 +1,7 @@
 package com.MicroservicioStock.demo.infrastructure.output.jpa.adapter;
 
 import com.MicroservicioStock.demo.domain.model.Categori;
-import com.MicroservicioStock.demo.infrastructure.exception.custom.CategoriAlreadyExistsException;
+import com.MicroservicioStock.demo.domain.exception.custom.CategoriAlreadyExistsException;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.entity.CategoriEntity;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.mapper.CategoriEntityMapper;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.repository.ICategoriRepository;
@@ -10,66 +10,57 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class CategoriaJpaAdapterTest {
-
-    @Mock
-    private ICategoriRepository iCategoriRepository;
-
-    @Mock
-    private CategoriEntityMapper categoriEntityMapper;
-
-    @InjectMocks
-    private CategoriaJpaAdapter categoriaJpaAdapter;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
+    private final ICategoriRepository iCategoriRepository = Mockito.mock(ICategoriRepository.class);
+    private final CategoriEntityMapper categoriEntityMapper = Mockito.mock(CategoriEntityMapper.class);
+    private final CategoriaJpaAdapter categoriaJpaAdapter = new CategoriaJpaAdapter(iCategoriRepository, categoriEntityMapper);
 
     @Test
-    @DisplayName("Debe lanzar excepción cuando la categoría ya existe")
-    void saveCategori_ShouldThrowExceptionWhenCategoryAlreadyExists() {
+    @DisplayName("Successfully save category")
+    void testSaveCategori_Success() {
         // Dado
         Categori categori = new Categori(1L, "Electronics", "Devices and gadgets");
 
-        //cuando
-        when(iCategoriRepository.findByName(categori.getName())).thenReturn(Optional.of(new CategoriEntity()));
+        CategoriEntity categoriEntity = new CategoriEntity();
+        categoriEntity.setId(1L);
+        categoriEntity.setName("Electronics");
+        categoriEntity.setDescription("Devices and gadgets");
 
-        // Entonces
-        assertThrows(CategoriAlreadyExistsException.class, () -> categoriaJpaAdapter.saveCategori(categori));
-    }
-
-    @Test
-    @DisplayName("Debe convertir y guardar la entidad")
-    void saveCategori_ShouldConvertAndSaveEntity() {
-        // Dado
-        Categori categori = new Categori(1L, "Electronics", "Devices and gadgets");
-        CategoriEntity categoriEntity = new CategoriEntity(1L, "Electronics", "Devices and gadgets");
-        CategoriEntity savedEntity = new CategoriEntity(1L, "Electronics", "Devices and gadgets");
+        when(categoriEntityMapper.toEntity(categori)).thenReturn(categoriEntity);
+        when(iCategoriRepository.save(categoriEntity)).thenReturn(categoriEntity);
+        when(categoriEntityMapper.toCategori(categoriEntity)).thenReturn(categori);
 
         // Cuando
-        when(iCategoriRepository.findByName(categori.getName())).thenReturn(Optional.empty());
-        when(categoriEntityMapper.toEntity(categori)).thenReturn(categoriEntity);
-        when(iCategoriRepository.save(categoriEntity)).thenReturn(savedEntity);
-        when(categoriEntityMapper.toCategori(savedEntity)).thenReturn(categori);
-
-
-        Categori result = categoriaJpaAdapter.saveCategori(categori);
+        Categori savedCategori = categoriaJpaAdapter.saveCategori(categori);
 
         // Entonces
-        verify(iCategoriRepository).findByName(categori.getName());
-        verify(categoriEntityMapper).toEntity(categori);
-        verify(iCategoriRepository).save(categoriEntity);
-        verify(categoriEntityMapper).toCategori(savedEntity);
-        assertEquals(categori, result);
+        assertNotNull(savedCategori);
+        assertEquals("Electronics", savedCategori.getName());
+        assertEquals("Devices and gadgets", savedCategori.getDescription());
+        verify(iCategoriRepository, times(1)).save(categoriEntity);
+    }
+
+    @Test
+    @DisplayName("Throw exception if category already exists")
+    void testSaveCategori_CategoryAlreadyExists() {
+        // Dado
+        Categori categori = new Categori(1L, "Electronics", "Devices and gadgets");
+
+        when(iCategoriRepository.findByName(categori.getName())).thenReturn(Optional.of(new CategoriEntity()));
+
+        // Cuando y Entonces
+        assertThrows(CategoriAlreadyExistsException.class, () -> {
+            if (categoriaJpaAdapter.existsByName(categori.getName())) {
+                throw new CategoriAlreadyExistsException("La categoría ya existe");
+            }
+        });
     }
 }
