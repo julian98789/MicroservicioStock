@@ -1,4 +1,4 @@
-package com.MicroservicioStock.demo.infrastructure.exception.custom;
+package com.MicroservicioStock.demo.domain.exception.custom;
 
 public class CategoriAlreadyExistsException extends RuntimeException{
     public CategoriAlreadyExistsException(String message) {

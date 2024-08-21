@@ -36,6 +36,11 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.springframework:spring-test")
+	testImplementation("com.ninja-squad:springmockk:3.0.1")
+
 }
 
 tasks.named('test') {

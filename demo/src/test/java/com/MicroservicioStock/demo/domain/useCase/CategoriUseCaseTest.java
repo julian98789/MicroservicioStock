@@ -28,7 +28,7 @@ class CategoriUseCaseTest {
     }
 
     @Test
-    @DisplayName("Debe llamar al puerto de persistencia cuando la categoria se valida")
+    @DisplayName("It should call the persistence port when the category is validated")
     void saveCategori_ShouldCallPersistencePort_WhenCategoriIsValid() {
         // Dado
         Long id = 1L;

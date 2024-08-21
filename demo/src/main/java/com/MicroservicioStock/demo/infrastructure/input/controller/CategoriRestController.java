@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/categori")
@@ -24,13 +21,15 @@ public class CategoriRestController {
     private final ICategoriHandler iCategoriHandler;
 
     @PostMapping()
-    @Operation(summary = "Guardar una categoría", description = "Guarda una nueva categoría en el sistema.")
+    @Operation(summary = "Save a category", description = "Save a new category to the database.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Categoría creada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "La categoría ya existe"),
+            @ApiResponse(responseCode = "201", description = "Category created successfully"),
+            @ApiResponse(responseCode = "400", description = "Category already exists"),
     })
     public ResponseEntity<CategoriResponse> saveCategori(@Valid @RequestBody CategoriRequest categoriRequest) {
         CategoriResponse savedCategori = iCategoriHandler.saveCategori(categoriRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategori);
     }
+
+
 }
