@@ -5,13 +5,9 @@ import com.MicroservicioStock.demo.domain.exception.custom.CategoriAlreadyExists
 import com.MicroservicioStock.demo.infrastructure.output.jpa.entity.CategoriEntity;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.mapper.CategoriEntityMapper;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.repository.ICategoriRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 

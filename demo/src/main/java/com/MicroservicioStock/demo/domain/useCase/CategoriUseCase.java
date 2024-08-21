@@ -6,7 +6,6 @@ import com.MicroservicioStock.demo.domain.model.Categori;
 import com.MicroservicioStock.demo.domain.spi.ICategoriPersistencePort;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CategoriUseCase implements ICategoriServicePort {
 

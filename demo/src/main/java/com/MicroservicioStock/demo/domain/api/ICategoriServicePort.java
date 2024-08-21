@@ -3,7 +3,7 @@ package com.MicroservicioStock.demo.domain.api;
 import com.MicroservicioStock.demo.domain.model.Categori;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface ICategoriServicePort {
 

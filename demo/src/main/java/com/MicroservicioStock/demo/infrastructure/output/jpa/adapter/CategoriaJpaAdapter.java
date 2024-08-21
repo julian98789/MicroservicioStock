@@ -2,7 +2,6 @@ package com.MicroservicioStock.demo.infrastructure.output.jpa.adapter;
 
 import com.MicroservicioStock.demo.domain.model.Categori;
 import com.MicroservicioStock.demo.domain.spi.ICategoriPersistencePort;
-import com.MicroservicioStock.demo.domain.exception.custom.CategoriAlreadyExistsException;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.entity.CategoriEntity;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.mapper.CategoriEntityMapper;
 import com.MicroservicioStock.demo.infrastructure.output.jpa.repository.ICategoriRepository;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -43,7 +41,7 @@ public class CategoriaJpaAdapter implements ICategoriPersistencePort {
         Page<CategoriEntity> categoriEntities = iCategoriRepository.findAll(pageRequest);
 
         return categoriEntities.stream()
-                .map(categoriEntityMapper::toCategori)
-                .collect(Collectors.toList());
+                .map(categoriEntityMapper::toCategori).toList();
+
     }
 }

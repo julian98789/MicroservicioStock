@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class CategoriHandler implements ICategoriHandler{
     public List<CategoriResponse> getCategories(int page, int size, String sort, boolean ascending) {
         List<Categori> categories = iCategoriServicePort.getCategories(page, size, sort, ascending);
         return categories.stream()
-                .map(categoriResponseMapper::categoriResponseToresponse)
-                .collect(Collectors.toList());
+                .map(categoriResponseMapper::categoriResponseToresponse).toList();
+
     }
 }
