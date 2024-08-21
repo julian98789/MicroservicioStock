@@ -5,6 +5,7 @@ import com.MicroservicioStock.demo.domain.exception.custom.CategoriAlreadyExists
 import com.MicroservicioStock.demo.domain.model.Categori;
 import com.MicroservicioStock.demo.domain.spi.ICategoriPersistencePort;
 
+import java.util.List;
 import java.util.Optional;
 
 public class CategoriUseCase implements ICategoriServicePort {
@@ -25,6 +26,11 @@ public class CategoriUseCase implements ICategoriServicePort {
     @Override
     public boolean existsByName(String name) {
         return iCategoriPersistencePort.existsByName(name); // Usa existsByName aquí
+    }
+
+    @Override
+    public List<Categori> getCategories(int page, int size, String sort, boolean ascending) {
+        return iCategoriPersistencePort.getCategories(page, size, sort, ascending);
     }
     
 }

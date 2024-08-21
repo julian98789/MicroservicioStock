@@ -9,9 +9,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/categori")
@@ -29,6 +30,15 @@ public class CategoriRestController {
     public ResponseEntity<CategoriResponse> saveCategori(@Valid @RequestBody CategoriRequest categoriRequest) {
         CategoriResponse savedCategori = iCategoriHandler.saveCategori(categoriRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategori);
+    }
+
+    @GetMapping
+    public List<CategoriResponse> getCategories(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sort,
+            @RequestParam(defaultValue = "true") boolean ascending) {
+        return iCategoriHandler.getCategories(page, size, sort, ascending);
     }
 
 
