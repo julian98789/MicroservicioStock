@@ -16,13 +16,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @WebMvcTest(CategoriRestController.class)
 class CategoriRestControllerTest {
@@ -48,7 +51,7 @@ class CategoriRestControllerTest {
 
     @Test
     @DisplayName("Should successfully save a category and return HTTP 201")
-    public void testSaveCategori_Success() throws Exception {
+    void testSaveCategori_Success() throws Exception {
         // Dado
         CategoriRequest request = new CategoriRequest();
         request.setName("Nueva Categoría");
@@ -126,9 +129,10 @@ class CategoriRestControllerTest {
                 .andExpect(status().isBadRequest());
 
     }
+
     @Test
     @DisplayName("Should return HTTP 400 when the category already exists")
-    public void testSaveCategori_CategoryAlreadyExists() throws Exception {
+    void testSaveCategori_CategoryAlreadyExists() throws Exception {
 
         // Dado
         CategoriRequest request = new CategoriRequest();
@@ -144,6 +148,20 @@ class CategoriRestControllerTest {
                         .content(requestJson))
                 // Entonces
                 .andExpect(status().isBadRequest());
+
+    }
+
+
+    @Test
+    public void testGetCategories() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/categori")
+                        .param("page", "0")
+                        .param("size", "2") // Solicita 2 elementos
+                        .param("sort", "name")
+                        .param("ascending", "true"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
 
     }
 
