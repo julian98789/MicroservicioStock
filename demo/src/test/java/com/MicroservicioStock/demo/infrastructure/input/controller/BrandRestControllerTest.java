@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -135,6 +137,19 @@ class BrandRestControllerTest {
                         .content(requestJson))
                 // Entonces
                 .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+     void testGetBrands() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/brand")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .param("sort", "name")
+                        .param("ascending", "true"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
 
     }
 

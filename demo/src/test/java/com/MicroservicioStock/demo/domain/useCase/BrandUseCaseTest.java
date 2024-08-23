@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -68,6 +71,20 @@ class BrandUseCaseTest {
         assertEquals("La marca ya existe", exception.getMessage());
         verify(iBrandPersistencePort, times(1)).existsByName(brand.getName());
         verify(iBrandPersistencePort, never()).saveBrand(any(Brand.class));
+    }
+
+    @Test
+    @DisplayName("Should return a list of brand")
+    void testGetBrands() {
+        List<Brand> brands = new ArrayList<>();
+        brands.add(new Brand(1L,"Electronics","Electronics"));
+        when(iBrandPersistencePort.getBrands(0, 10, "name", true)).thenReturn(brands);
+
+        List<Brand> retrievedBrands = brandUseCase.getBrands(0, 10, "name", true);
+
+        assertNotNull(retrievedBrands);
+        assertEquals(1, retrievedBrands.size());
+        verify(iBrandPersistencePort, times(1)).getBrands(0, 10, "name", true);
     }
 
     @Test

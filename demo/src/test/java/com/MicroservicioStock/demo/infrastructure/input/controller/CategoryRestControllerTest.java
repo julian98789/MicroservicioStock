@@ -153,11 +153,11 @@ class CategoryRestControllerTest {
 
 
     @Test
-    public void testGetCategories() throws Exception {
+     void testGetCategories() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/category")
                         .param("page", "0")
-                        .param("size", "2") // Solicita 2 elementos
+                        .param("size", "2")
                         .param("sort", "name")
                         .param("ascending", "true"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
