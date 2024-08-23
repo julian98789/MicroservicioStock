@@ -16,8 +16,8 @@ import static org.mockito.Mockito.*;
 
 class CategoriaJpaAdapterTest {
     private final ICategoriRepository iCategoriRepository = Mockito.mock(ICategoriRepository.class);
-    private final CategoriEntityMapper categoriEntityMapper = Mockito.mock(CategoriEntityMapper.class);
-    private final CategoriaJpaAdapter categoriaJpaAdapter = new CategoriaJpaAdapter(iCategoriRepository, categoriEntityMapper);
+    private final CategoriEntityMapper CategoriEntityMapper = Mockito.mock(CategoriEntityMapper.class);
+    private final CategoriaJpaAdapter categoriaJpaAdapter = new CategoriaJpaAdapter(iCategoriRepository, CategoriEntityMapper);
 
     @Test
     @DisplayName("Successfully save category")
@@ -30,9 +30,9 @@ class CategoriaJpaAdapterTest {
         categoriEntity.setName("Electronics");
         categoriEntity.setDescription("Devices and gadgets");
 
-        when(categoriEntityMapper.toEntity(categori)).thenReturn(categoriEntity);
+        when(CategoriEntityMapper.toEntity(categori)).thenReturn(categoriEntity);
         when(iCategoriRepository.save(categoriEntity)).thenReturn(categoriEntity);
-        when(categoriEntityMapper.toCategori(categoriEntity)).thenReturn(categori);
+        when(CategoriEntityMapper.toCategori(categoriEntity)).thenReturn(categori);
 
         // Cuando
         Categori savedCategori = categoriaJpaAdapter.saveCategori(categori);

@@ -24,7 +24,7 @@ public class CategoriUseCase implements ICategoriServicePort {
     }
     @Override
     public boolean existsByName(String name) {
-        return iCategoriPersistencePort.existsByName(name); // Usa existsByName aquí
+        return iCategoriPersistencePort.existsByName(name);
     }
 
     @Override

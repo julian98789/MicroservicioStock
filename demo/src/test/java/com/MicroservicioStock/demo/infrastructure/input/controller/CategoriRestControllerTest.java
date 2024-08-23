@@ -1,9 +1,9 @@
 package com.MicroservicioStock.demo.infrastructure.input.controller;
 
-import com.MicroservicioStock.demo.application.dto.CategoriRequest;
-import com.MicroservicioStock.demo.application.dto.CategoriResponse;
-import com.MicroservicioStock.demo.application.handler.CategoriHandler;
-import com.MicroservicioStock.demo.application.handler.ICategoriHandler;
+import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriRequest;
+import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriResponse;
+import com.MicroservicioStock.demo.application.handler.categoriHandler.CategoriHandler;
+import com.MicroservicioStock.demo.application.handler.categoriHandler.ICategoriHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

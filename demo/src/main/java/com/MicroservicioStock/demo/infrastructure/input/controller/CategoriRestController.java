@@ -1,8 +1,8 @@
 package com.MicroservicioStock.demo.infrastructure.input.controller;
 
-import com.MicroservicioStock.demo.application.dto.CategoriRequest;
-import com.MicroservicioStock.demo.application.dto.CategoriResponse;
-import com.MicroservicioStock.demo.application.handler.ICategoriHandler;
+import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriRequest;
+import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriResponse;
+import com.MicroservicioStock.demo.application.handler.categoriHandler.ICategoriHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,7 +43,7 @@ public class CategoriRestController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Category already exists",
+                    description = "Invalid input data",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(type = "string")

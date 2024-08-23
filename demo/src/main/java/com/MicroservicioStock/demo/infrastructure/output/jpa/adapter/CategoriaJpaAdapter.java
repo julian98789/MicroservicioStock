@@ -11,20 +11,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class CategoriaJpaAdapter implements ICategoriPersistencePort {
 
     private final ICategoriRepository iCategoriRepository;
-    private final CategoriEntityMapper categoriEntityMapper;
+    private final CategoriEntityMapper CategoriEntityMapper;
 
 
     @Override
     public Categori saveCategori(Categori categori) {
-        CategoriEntity categoriEntity = categoriEntityMapper.toEntity(categori);
+        CategoriEntity categoriEntity = CategoriEntityMapper.toEntity(categori);
         CategoriEntity savedEntity = iCategoriRepository.save(categoriEntity);
-        return categoriEntityMapper.toCategori(savedEntity);
+        return CategoriEntityMapper.toCategori(savedEntity);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class CategoriaJpaAdapter implements ICategoriPersistencePort {
         Page<CategoriEntity> categoriEntities = iCategoriRepository.findAll(pageRequest);
 
         return categoriEntities.stream()
-                .map(categoriEntityMapper::toCategori).toList();
+                .map(CategoriEntityMapper::toCategori).toList();
 
     }
 }

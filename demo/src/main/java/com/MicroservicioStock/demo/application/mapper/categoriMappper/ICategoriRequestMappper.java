@@ -1,6 +1,6 @@
-package com.MicroservicioStock.demo.application.mapper;
+package com.MicroservicioStock.demo.application.mapper.categoriMappper;
 
-import com.MicroservicioStock.demo.application.dto.CategoriRequest;
+import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriRequest;
 import com.MicroservicioStock.demo.domain.model.Categori;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -9,7 +9,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 
-public interface CategoriRequestMappper {
+public interface ICategoriRequestMappper {
 
     Categori categoriRequestTocategori(CategoriRequest categoriRequest);
 }
