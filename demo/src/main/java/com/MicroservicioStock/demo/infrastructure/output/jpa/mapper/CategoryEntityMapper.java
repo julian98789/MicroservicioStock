@@ -1,7 +1,7 @@
 package com.MicroservicioStock.demo.infrastructure.output.jpa.mapper;
 
-import com.MicroservicioStock.demo.domain.model.Categori;
-import com.MicroservicioStock.demo.infrastructure.output.jpa.entity.CategoriEntity;
+import com.MicroservicioStock.demo.domain.model.Category;
+import com.MicroservicioStock.demo.infrastructure.output.jpa.entity.CategoryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -9,9 +9,9 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 
-public interface CategoriEntityMapper {
+public interface CategoryEntityMapper {
 
-    CategoriEntity toEntity(Categori categori);
+    CategoryEntity toEntity(Category category);
 
-    Categori toCategori(CategoriEntity categoriEntity);
+    Category toCategory(CategoryEntity categoryEntity);
 }

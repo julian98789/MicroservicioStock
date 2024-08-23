@@ -1,9 +1,8 @@
 package com.MicroservicioStock.demo.infrastructure.input.controller;
 
-import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriRequest;
-import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriResponse;
-import com.MicroservicioStock.demo.application.handler.categoriHandler.CategoriHandler;
-import com.MicroservicioStock.demo.application.handler.categoriHandler.ICategoriHandler;
+import com.MicroservicioStock.demo.application.dto.brandDto.BrandRequest;
+import com.MicroservicioStock.demo.application.dto.brandDto.BrandResponse;
+import com.MicroservicioStock.demo.application.handler.brandHandler.IBrandHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,74 +10,62 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(CategoriRestController.class)
-class CategoriRestControllerTest {
+class BrandRestControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
     @Mock
-    private CategoriHandler categoriHandler;
-
-    @MockBean
-    private ICategoriHandler iCategoriHandler;
+    private IBrandHandler iBrandHandler;
 
     @InjectMocks
-    private CategoriRestController categoriRestController;
+    private BrandRestController brandRestController;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(categoriRestController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(brandRestController).build();
     }
 
-
     @Test
-    @DisplayName("Should successfully save a category and return HTTP 201")
-    void testSaveCategori_Success() throws Exception {
+    @DisplayName("Should successfully save a brand and return HTTP 201")
+    void testSaveBrand_Success() throws Exception {
         // Dado
-        CategoriRequest request = new CategoriRequest();
-        request.setName("Nueva Categoría");
-        request.setDescription("Descripción de la nueva categoría");
+        BrandRequest request = new BrandRequest();
+        request.setName("Nueva marca");
+        request.setDescription("Descripción de la nueva marca");
 
-        CategoriResponse response = new CategoriResponse();
-        response.setName("Nueva Categoría");
+        BrandResponse response = new BrandResponse();
+        response.setName("Nueva marca");
 
         // Cuando
-        when(iCategoriHandler.saveCategori(any(CategoriRequest.class))).thenReturn(response);
+        when(iBrandHandler.savedBrand(any(BrandRequest.class))).thenReturn(response);
 
         // Entonces
-        mockMvc.perform(post("/categori")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Nueva Categoría\", \"description\":\"Descripción de la nueva categoría\"}")) // JSON del CategoriRequest
+                        .content("{\"name\":\"Nueva marca\", \"description\":\"Descripción de la nueva marca\"}"))
                 .andExpect(status().isCreated());
 
     }
 
     @Test
     @DisplayName("Should return HTTP 400 when the request body is empty")
-    void testSaveCategori_EmptyRequest() throws Exception {
+    void testSaveBrand_EmptyRequest() throws Exception {
         // Dado
         String emptyRequestBody = "";
 
         // Cuando
-        mockMvc.perform(post("/categori")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(emptyRequestBody))
                 // Entonces
@@ -87,12 +74,12 @@ class CategoriRestControllerTest {
 
     @Test
     @DisplayName("Should return HTTP 400 when the fields are empty")
-    void testSaveCategori_EmptyFields() throws Exception {
+    void testSaveBrand_EmptyFields() throws Exception {
         // Dado
         String requestBodyWithEmptyFields = "{ \"name\": \"\", \"description\": \"\" }";
 
         // Cuando
-        mockMvc.perform(post("/categori")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyWithEmptyFields))
                 // Entonces
@@ -101,13 +88,13 @@ class CategoriRestControllerTest {
 
     @Test
     @DisplayName("Should return HTTP 400 when the name exceeds 50 characters")
-    void testSaveCategori_NameTooLong() throws Exception {
+    void testSaveBrand_NameTooLong() throws Exception {
         // Dado
         String longName = "A".repeat(51);
         String requestBodyWithLongName = String.format("{ \"name\": \"%s\", \"description\": \"Valid description\" }", longName);
 
         // Cuando
-        mockMvc.perform(post("/categori")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyWithLongName))
                 // Entonces
@@ -115,14 +102,14 @@ class CategoriRestControllerTest {
     }
 
     @Test
-    @DisplayName("Should return HTTP 400 when the description exceeds 90 characters")
-    void testSaveCategori_DescriptionTooLong() throws Exception {
+    @DisplayName("Should return HTTP 400 when the description exceeds 120 characters")
+    void testSaveBrand_DescriptionTooLong() throws Exception {
         // Dado
-        String longDescription = "A".repeat(91);
+        String longDescription = "A".repeat(121);
         String requestBodyWithLongDescription = String.format("{ \"name\": \"Valid name\", \"description\": \"%s\" }", longDescription);
 
         // Cuando
-        mockMvc.perform(post("/categori")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBodyWithLongDescription))
                 // Entonces
@@ -132,38 +119,23 @@ class CategoriRestControllerTest {
 
     @Test
     @DisplayName("Should return HTTP 400 when the category already exists")
-    void testSaveCategori_CategoryAlreadyExists() throws Exception {
+    void testSaveCategory_CategoryAlreadyExists() throws Exception {
 
         // Dado
-        CategoriRequest request = new CategoriRequest();
+        BrandRequest request = new BrandRequest();
         request.setName("Electronics");
         String requestJson = new ObjectMapper().writeValueAsString(request);
 
         // Cuando
-        when(iCategoriHandler.saveCategori(any(CategoriRequest.class)))
-                .thenThrow(new IllegalArgumentException("La categoría ya existe"));
+        when(iBrandHandler.savedBrand(any(BrandRequest.class)))
+                .thenThrow(new IllegalArgumentException("La marca ya existe"));
 
-        mockMvc.perform(post("/categori")
+        mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 // Entonces
                 .andExpect(status().isBadRequest());
 
     }
-
-
-    @Test
-    public void testGetCategories() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/categori")
-                        .param("page", "0")
-                        .param("size", "2") // Solicita 2 elementos
-                        .param("sort", "name")
-                        .param("ascending", "true"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
-
-    }
-
 
 }

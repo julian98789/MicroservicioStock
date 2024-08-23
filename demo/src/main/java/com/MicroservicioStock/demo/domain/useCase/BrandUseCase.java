@@ -23,7 +23,7 @@ public class BrandUseCase implements IBrandServicePort {
     public Brand saveBrand(Brand brand) {
         validateBrand(brand);
         if (iBrandPersistencePort.existsByName(brand.getName())) {
-            throw new BrandAlreadyExistsException("La categoría ya existe");
+            throw new BrandAlreadyExistsException("La marca ya existe");
         }
         return iBrandPersistencePort.saveBrand(brand);
     }
@@ -38,7 +38,7 @@ public class BrandUseCase implements IBrandServicePort {
         return iBrandPersistencePort.getBrands(page, size, sort, ascending);
     }
 
-    private void validateBrand(Brand brand) {
+    public void validateBrand(Brand brand) {
         if (brand.getName() == null || brand.getName().isEmpty()) {
             throw new InvalidBrandException("The name cannot be empty");
         }

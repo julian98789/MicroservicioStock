@@ -1,8 +1,8 @@
 package com.MicroservicioStock.demo.infrastructure.input.controller;
 
-import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriRequest;
-import com.MicroservicioStock.demo.application.dto.categoriDto.CategoriResponse;
-import com.MicroservicioStock.demo.application.handler.categoriHandler.ICategoriHandler;
+import com.MicroservicioStock.demo.application.dto.categoryDto.CategoriRequest;
+import com.MicroservicioStock.demo.application.dto.categoryDto.CategoryResponse;
+import com.MicroservicioStock.demo.application.handler.categoryHandler.ICategoryHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categori")
+@RequestMapping("/category")
 @RequiredArgsConstructor
-public class CategoriRestController {
+public class CategoryRestController {
 
-    private final ICategoriHandler iCategoriHandler;
+    private final ICategoryHandler iCategoryHandler;
 
     @PostMapping
     @Operation(
@@ -38,7 +38,7 @@ public class CategoriRestController {
                     description = "Category created successfully",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = CategoriResponse.class)
+                            schema = @Schema(implementation = CategoryResponse.class)
                     )
             ),
             @ApiResponse(
@@ -50,9 +50,9 @@ public class CategoriRestController {
                     )
             )
     })
-    public ResponseEntity<CategoriResponse> saveCategori(@Valid @RequestBody CategoriRequest categoriRequest) {
-        CategoriResponse savedCategori = iCategoriHandler.saveCategori(categoriRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategori);
+    public ResponseEntity<CategoryResponse> saveCategory(@Valid @RequestBody CategoriRequest categoriRequest) {
+        CategoryResponse savedCategory = iCategoryHandler.saveCategory(categoriRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
 
     @GetMapping
@@ -67,7 +67,7 @@ public class CategoriRestController {
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
-                                    schema = @Schema(implementation = CategoriResponse.class)
+                                    schema = @Schema(implementation = CategoryResponse.class)
                             )
                     )
             ),
@@ -80,12 +80,12 @@ public class CategoriRestController {
                     )
             )
     })
-    public List<CategoriResponse> getCategories(
+    public List<CategoryResponse> getCategories(
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "10") @Min(1)int size,
             @RequestParam(defaultValue = "name") @NotBlank @Size(min = 1)String sort,
             @RequestParam(defaultValue = "true") boolean ascending) {
-        return iCategoriHandler.getCategories(page, size, sort, ascending);
+        return iCategoryHandler.getCategories(page, size, sort, ascending);
     }
 
 }

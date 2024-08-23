@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "categori")
+@Table(name = "category")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class CategoriEntity {
+public class CategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
