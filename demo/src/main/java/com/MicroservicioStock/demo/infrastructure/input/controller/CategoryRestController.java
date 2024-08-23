@@ -80,6 +80,7 @@ public class CategoryRestController {
                     )
             )
     })
+
     public List<CategoryResponse> getCategories(
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "10") @Min(1)int size,
