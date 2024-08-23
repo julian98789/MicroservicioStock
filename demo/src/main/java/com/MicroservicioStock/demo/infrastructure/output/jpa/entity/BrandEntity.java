@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "categori")
+@Table(name = "brand")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class CategoriEntity {
+public class BrandEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,8 @@ public class CategoriEntity {
     private String name;
 
     @NotBlank
-    @Size(max = 90)
-    @Column(name = "description", length = 90)
+    @Size(max = 120)
+    @Column(name = "description", length = 120)
     private String description;
+
 }

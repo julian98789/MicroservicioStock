@@ -1,17 +1,16 @@
 package com.MicroservicioStock.demo.infrastructure.output.jpa.mapper;
 
-import com.MicroservicioStock.demo.domain.model.Categori;
-import com.MicroservicioStock.demo.infrastructure.output.jpa.entity.CategoriEntity;
+import com.MicroservicioStock.demo.domain.model.Brand;
+import com.MicroservicioStock.demo.infrastructure.output.jpa.entity.BrandEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
+public interface IBrandEntityMapper {
 
-public interface CategoriEntityMapper {
+    BrandEntity toEntity(Brand brand);
 
-    CategoriEntity toEntity(Categori categori);
-
-    Categori toCategori(CategoriEntity categoriEntity);
+    Brand toBrand(BrandEntity brandEntity);
 }

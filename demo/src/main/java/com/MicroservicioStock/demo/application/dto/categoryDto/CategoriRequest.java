@@ -1,4 +1,4 @@
-package com.MicroservicioStock.demo.application.dto;
+package com.MicroservicioStock.demo.application.dto.categoryDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
