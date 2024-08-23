@@ -34,6 +34,8 @@ public class BrandHandler implements IBrandHandler {
 
     @Override
     public List<BrandResponse> getBrands(int page, int size, String sort, boolean ascending) {
-        return List.of();
+         List<Brand> brands = iBrandServicePort.getBrands( page,  size,  sort,  ascending);
+         return brands.stream()
+                 .map(iBrandResponseMappper::brandResponseToResponse).toList();
     }
 }
