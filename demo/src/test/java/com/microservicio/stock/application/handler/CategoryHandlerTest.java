@@ -3,8 +3,8 @@ package com.microservicio.stock.application.handler;
 import com.microservicio.stock.application.dto.categorydto.CategoriRequest;
 import com.microservicio.stock.application.dto.categorydto.CategoryResponse;
 import com.microservicio.stock.application.handler.categoryhandler.CategoryHandler;
-import com.microservicio.stock.application.mapper.categorymappper.ICategoryRequestMappper;
-import com.microservicio.stock.application.mapper.categorymappper.ICategoryResponseMapper;
+import com.microservicio.stock.application.mapper.categorymapper.ICategoryRequestMapper;
+import com.microservicio.stock.application.mapper.categorymapper.ICategoryResponseMapper;
 import com.microservicio.stock.domain.api.ICategoryServicePort;
 import com.microservicio.stock.domain.model.Category;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ class CategoryHandlerTest {
     private ICategoryServicePort iCategoryServicePort;
 
     @Mock
-    private ICategoryRequestMappper iCategoryRequestMappper;
+    private ICategoryRequestMapper iCategoryRequestMapper;
 
     @Mock
     private ICategoryResponseMapper iCategoryResponseMapper;
@@ -52,7 +52,7 @@ class CategoryHandlerTest {
         response.setDescription("Devices and gadgets");
 
         // Cuando
-        when(iCategoryRequestMappper.categoryRequestToCategory(request)).thenReturn(category);
+        when(iCategoryRequestMapper.categoryRequestToCategory(request)).thenReturn(category);
         when(iCategoryServicePort.saveCategory(category)).thenReturn(savedCategory);
         when(iCategoryResponseMapper.categoryResponseToResponse(savedCategory)).thenReturn(response);
 

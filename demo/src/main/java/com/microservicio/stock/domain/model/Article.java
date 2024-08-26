@@ -11,9 +11,9 @@ public class Article {
     private int quantity;
     private BigDecimal price;
     private Brand brand;
-    private List<Category> categories;
+    private Set<Category> categories;
 
-    public Article(Long id, String name, String description, int quantity, BigDecimal price, Brand brand, List<Category> categories) {
+    public Article(Long id, String name, String description, int quantity, BigDecimal price, Brand brand, Set<Category> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -71,11 +71,11 @@ public class Article {
         this.brand = brand;
     }
 
-    public List<Category> getCategories() {
+    public Set<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(Set<Category> categories) {
         this.categories = categories;
     }
 }

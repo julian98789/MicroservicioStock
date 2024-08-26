@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,26 +26,27 @@ public class ArticleHandler implements IArticleHandler {
     private final IArticlePersistencePort articlePersistencePort;
     private final IArticleRequestMapper articleRequestMapper;
     private final IArticleResponseMapper articleResponseMapper;
-    private final ICategoryPersistencePort categoryPersistencePort; // Puerto para manejar categorías
+    private final ICategoryPersistencePort categoryPersistencePort;
     private final IBrandPersistencePort brandPersistencePort;
 
     @Override
     public ArticleResponse saveArticle(ArticleRequest articleRequest) {
-        // Convertir la solicitud en un objeto de dominio
+
+        String name = articleRequest.getName();
+        if (articlePersistencePort.existsByName(name)) {
+            throw new IllegalArgumentException("Articulo con nombre '" + name + "' ya existe.");
+        }
+
         Article article = articleRequestMapper.articleRequestToArticle(articleRequest);
 
-        // Manejar Brand
         Brand brand = brandPersistencePort.getBrandById(articleRequest.getBrandId());
         article.setBrand(brand);
 
-        // Manejar Category
-        List<Category> categories = categoryPersistencePort.getCategoriesByIds(articleRequest.getCategoryIds());
+        Set<Category> categories = categoryPersistencePort.getCategoriesByIds(articleRequest.getCategoryIds());
         article.setCategories(categories);
 
-        // Guardar el artículo
         Article savedArticle = articlePersistencePort.saveArticle(article);
 
-        // Convertir el modelo de dominio a DTO de respuesta
         return articleResponseMapper.toArticleResponseDto(savedArticle);
     }
 

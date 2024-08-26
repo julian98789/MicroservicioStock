@@ -1,6 +1,6 @@
-package com.microservicio.stock.application.mapper.brandmappper;
+package com.microservicio.stock.application.mapper.brandmapper;
 
-import com.microservicio.stock.application.dto.branddto.BrandResponse;
+import com.microservicio.stock.application.dto.branddto.BrandRequest;
 import com.microservicio.stock.domain.model.Brand;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -8,7 +8,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
-public interface IBrandResponseMappper {
+public interface IBrandRequestMapper {
 
-    BrandResponse brandResponseToResponse(Brand brand);
+    Brand brandRequestToBrand(BrandRequest brandRequest);
+
 }

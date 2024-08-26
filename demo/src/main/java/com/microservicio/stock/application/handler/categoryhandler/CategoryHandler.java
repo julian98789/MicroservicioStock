@@ -2,8 +2,8 @@ package com.microservicio.stock.application.handler.categoryhandler;
 
 import com.microservicio.stock.application.dto.categorydto.CategoriRequest;
 import com.microservicio.stock.application.dto.categorydto.CategoryResponse;
-import com.microservicio.stock.application.mapper.categorymappper.ICategoryRequestMappper;
-import com.microservicio.stock.application.mapper.categorymappper.ICategoryResponseMapper;
+import com.microservicio.stock.application.mapper.categorymapper.ICategoryRequestMapper;
+import com.microservicio.stock.application.mapper.categorymapper.ICategoryResponseMapper;
 import com.microservicio.stock.domain.api.ICategoryServicePort;
 import com.microservicio.stock.domain.model.Category;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @Transactional
 public class CategoryHandler implements ICategoryHandler {
     private final ICategoryServicePort iCategoryServicePort;
-    private final ICategoryRequestMappper iCategoryRequestMappper;
+    private final ICategoryRequestMapper iCategoryRequestMapper;
     private final ICategoryResponseMapper iCategoryResponseMapper;
 
     @Override
@@ -26,7 +26,7 @@ public class CategoryHandler implements ICategoryHandler {
         if (iCategoryServicePort.existsByName(name)) {
             throw new IllegalArgumentException("Categoría con nombre '" + name + "' ya existe.");
         }
-        Category category = iCategoryRequestMappper.categoryRequestToCategory(categoriRequest);
+        Category category = iCategoryRequestMapper.categoryRequestToCategory(categoriRequest);
         Category savedCategory = iCategoryServicePort.saveCategory(category);
         return iCategoryResponseMapper.categoryResponseToResponse(savedCategory);
     }

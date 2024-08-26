@@ -35,7 +35,6 @@ public class ArticleUseCase implements IArticleServicePort {
             throw new ValidationExceptions("El artículo no puede tener más de tres categorías.");
         }
 
-        // Validaciones adicionales como nombre, cantidad, precio, etc.
         if (article.getName() == null || article.getName().isEmpty()) {
             throw new ValidationExceptions("El nombre del artículo no puede estar vacío.");
         }

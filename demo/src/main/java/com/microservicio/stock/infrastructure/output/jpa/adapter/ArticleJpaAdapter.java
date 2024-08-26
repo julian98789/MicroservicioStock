@@ -40,6 +40,6 @@ public class ArticleJpaAdapter implements IArticlePersistencePort {
 
     @Override
     public boolean existsByName(String name) {
-        return false;
+        return articleRepository.findByName(name).isPresent();
     }
 }
