@@ -1,7 +1,6 @@
 package com.microservicio.stock.domain.model;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 public class Article {

@@ -1,6 +1,5 @@
 package com.microservicio.stock.infrastructure.output.jpa.entity;
 
-import com.microservicio.stock.domain.model.Article;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

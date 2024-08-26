@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +54,8 @@ public class ArticleHandler implements IArticleHandler {
     public List<ArticleResponse> listArticles(int page, int size, String sort, boolean ascending) {
         List<Article> articles = articlePersistencePort.getArticles(page, size, sort, ascending);
 
-        // Convertimos la lista de artículos a DTOs de respuesta
         return articles.stream()
-                .map(articleResponseMapper::toArticleResponseDto)
-                .collect(Collectors.toList());
+                .map(articleResponseMapper::toArticleResponseDto).toList();
+
     }
 }

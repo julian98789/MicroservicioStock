@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class ArticleJpaAdapter implements IArticlePersistencePort {
@@ -33,8 +32,8 @@ public class ArticleJpaAdapter implements IArticlePersistencePort {
         Page<ArticleEntity> articleEntities = articleRepository.findAll(PageRequest.of(page, size, Sort.by(sort)));
 
         return articleEntities.stream()
-                .map(articleEntityMapper::toModel)
-                .collect(Collectors.toList());
+                .map(articleEntityMapper::toModel).toList();
+
 
     }
 
