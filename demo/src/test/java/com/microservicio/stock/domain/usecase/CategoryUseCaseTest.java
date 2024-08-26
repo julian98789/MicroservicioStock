@@ -2,7 +2,7 @@ package com.microservicio.stock.domain.usecase;
 
 
 import com.microservicio.stock.domain.exception.custom.CategoryAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.InvalidBrandException;
+import com.microservicio.stock.domain.exception.custom.ValidationExceptions;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -127,7 +127,7 @@ class CategoryUseCaseTest {
     void testValidateCategoryWhenNameIsEmpty() {
         Category category = new Category(1L, "", "Valid description");
 
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             categoryUseCase.validateCategory(category);
         });
 
@@ -140,7 +140,7 @@ class CategoryUseCaseTest {
         String longName = "a".repeat(MAX_NAME_LENGTH + 1);
         Category category = new Category(1L, longName, "Valid description");
 
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             categoryUseCase.validateCategory(category);
         });
 
@@ -152,7 +152,7 @@ class CategoryUseCaseTest {
     void testValidateCategoryWhenDescriptionIsEmpty() {
         Category category = new Category(1L, "Valid name", "");
 
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             categoryUseCase.validateCategory(category);
         });
 
@@ -165,7 +165,7 @@ class CategoryUseCaseTest {
         String longDescription = "a".repeat(MAX_DESCRIPTION_LENGTH + 1);
         Category category = new Category(1L, "Valid name", longDescription);
 
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             categoryUseCase.validateCategory(category);
         });
 

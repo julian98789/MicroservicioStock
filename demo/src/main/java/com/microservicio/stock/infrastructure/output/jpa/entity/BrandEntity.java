@@ -1,5 +1,6 @@
 package com.microservicio.stock.infrastructure.output.jpa.entity;
 
+import com.microservicio.stock.domain.model.Article;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "brand")
@@ -29,5 +32,8 @@ public class BrandEntity {
     @Size(max = 120)
     @Column(name = "description", length = 120)
     private String description;
+
+    @OneToMany(mappedBy = "brand")
+    private Set<ArticleEntity> articles;
 
 }

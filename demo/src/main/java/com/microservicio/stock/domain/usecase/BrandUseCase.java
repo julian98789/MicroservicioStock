@@ -3,7 +3,7 @@ package com.microservicio.stock.domain.usecase;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.api.IBrandServicePort;
 import com.microservicio.stock.domain.exception.custom.BrandAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.InvalidBrandException;
+import com.microservicio.stock.domain.exception.custom.ValidationExceptions;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
 
 import java.util.List;
@@ -40,16 +40,16 @@ public class BrandUseCase implements IBrandServicePort {
 
     public void validateBrand(Brand brand) {
         if (brand.getName() == null || brand.getName().isEmpty()) {
-            throw new InvalidBrandException("The name cannot be empty");
+            throw new ValidationExceptions("The name cannot be empty");
         }
         if (brand.getName().length() > MAX_NAME_LENGTH) {
-            throw new InvalidBrandException("The name must not exceed 50 characters");
+            throw new ValidationExceptions("The name must not exceed 50 characters");
         }
         if (brand.getDescription() == null || brand.getDescription().isEmpty()) {
-            throw new InvalidBrandException("The description cannot be empty");
+            throw new ValidationExceptions("The description cannot be empty");
         }
         if (brand.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
-            throw new InvalidBrandException("The description must not exceed 120 characters");
+            throw new ValidationExceptions("The description must not exceed 120 characters");
         }
     }
 }

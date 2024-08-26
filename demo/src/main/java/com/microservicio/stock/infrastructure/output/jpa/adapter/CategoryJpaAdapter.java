@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class CategoryJpaAdapter implements ICategoryPersistencePort {
@@ -41,6 +42,17 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
         return categoryEntities.stream()
                 .map(categoryEntityMapper::toCategory).toList();
+
+    }
+
+    @Override
+    public List<Category> getCategoriesByIds(List<Long> ids) {
+        List<CategoryEntity> categoryEntities = iCategoryRepository.findAllById(ids);
+
+        // Convierte las entidades de categoría a modelos de dominio
+        return categoryEntities.stream()
+                .map(categoryEntityMapper::toCategory)
+                .collect(Collectors.toList());
 
     }
 }

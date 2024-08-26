@@ -1,7 +1,7 @@
 package com.microservicio.stock.domain.usecase;
 
 import com.microservicio.stock.domain.exception.custom.BrandAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.InvalidBrandException;
+import com.microservicio.stock.domain.exception.custom.ValidationExceptions;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,7 +124,7 @@ class BrandUseCaseTest {
         Brand brand = new Brand(1L, "", "Sportswear brand");
 
         // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             brandUseCase.saveBrand(brand);
         });
 
@@ -142,7 +142,7 @@ class BrandUseCaseTest {
         Brand brand = new Brand(1L, longName, "Sportswear brand");
 
         // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             brandUseCase.validateBrand(brand);
         });
 
@@ -157,7 +157,7 @@ class BrandUseCaseTest {
         Brand brand = new Brand(1L, "Nike", "");
 
         // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             brandUseCase.saveBrand(brand);
         });
 
@@ -174,7 +174,7 @@ class BrandUseCaseTest {
         Brand brand = new Brand(1L, "Nike", longDescription);
 
         // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
+        ValidationExceptions exception = assertThrows(ValidationExceptions.class, () -> {
             brandUseCase.saveBrand(brand);
         });
 

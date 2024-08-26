@@ -2,7 +2,7 @@ package com.microservicio.stock.domain.usecase;
 
 import com.microservicio.stock.domain.api.ICategoryServicePort;
 import com.microservicio.stock.domain.exception.custom.CategoryAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.InvalidBrandException;
+import com.microservicio.stock.domain.exception.custom.ValidationExceptions;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
 
@@ -40,16 +40,16 @@ public class CategoryUseCase implements ICategoryServicePort {
 
     public void validateCategory(Category category) {
         if (category.getName() == null || category.getName().isEmpty()) {
-            throw new InvalidBrandException("The name cannot be empty");
+            throw new ValidationExceptions("The name cannot be empty");
         }
         if (category.getName().length() > MAX_NAME_LENGTH) {
-            throw new InvalidBrandException("The name must not exceed 50 characters");
+            throw new ValidationExceptions("The name must not exceed 50 characters");
         }
         if (category.getDescription() == null || category.getDescription().isEmpty()) {
-            throw new InvalidBrandException("The description cannot be empty");
+            throw new ValidationExceptions("The description cannot be empty");
         }
         if (category.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
-            throw new InvalidBrandException("The description must not exceed 120 characters");
+            throw new ValidationExceptions("The description must not exceed 120 characters");
         }
     }
     
