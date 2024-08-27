@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 public class CategoriRequest {
     @NotBlank
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 50, message = "el tamaño debe estar entre 1 y 50 caracteres")
     private String name;
 
     @NotBlank
-    @Size(min = 1, max = 90)
+    @Size(min = 1, max = 90, message = "el tamaño debe estar entre 1 y 90 caracteres")
     private String description;
 }

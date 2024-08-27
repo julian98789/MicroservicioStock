@@ -1,7 +1,6 @@
 package com.microservicio.stock.domain.usecase;
 
-import com.microservicio.stock.domain.exception.custom.BrandAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.InvalidBrandException;
+import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +20,6 @@ import static org.mockito.Mockito.*;
 class BrandUseCaseTest {
 
 
-    private static final int MAX_NAME_LENGTH = 50;
-    private static final int MAX_DESCRIPTION_LENGTH = 120;
 
     @Mock
     private IBrandPersistencePort iBrandPersistencePort;
@@ -63,12 +60,13 @@ class BrandUseCaseTest {
         // Cuando
         when(iBrandPersistencePort.existsByName(brand.getName())).thenReturn(true);
 
-        BrandAlreadyExistsException exception = assertThrows(BrandAlreadyExistsException.class, () -> {
+        NameAlreadyExistsException exception = assertThrows(NameAlreadyExistsException.class, () -> {
             brandUseCase.saveBrand(brand);
         });
 
+
         // Entonces
-        assertEquals("La marca ya existe", exception.getMessage());
+        assertEquals("La marca '" + brand.getName() + "' ya existe", exception.getMessage());
         verify(iBrandPersistencePort, times(1)).existsByName(brand.getName());
         verify(iBrandPersistencePort, never()).saveBrand(any(Brand.class));
     }
@@ -116,74 +114,6 @@ class BrandUseCaseTest {
         assertFalse(exists);
         verify(iBrandPersistencePort, times(1)).existsByName(name);
     }
-
-    @Test
-    @DisplayName("Should throw exception when brand name is empty")
-    void testValidateBrandWhenNameIsEmpty() {
-        // Dado
-        Brand brand = new Brand(1L, "", "Sportswear brand");
-
-        // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            brandUseCase.saveBrand(brand);
-        });
-
-        // Entonces
-        assertEquals("The name cannot be empty", exception.getMessage());
-        verify(iBrandPersistencePort, never()).existsByName(anyString());
-        verify(iBrandPersistencePort, never()).saveBrand(any(Brand.class));
-    }
-
-    @Test
-    @DisplayName("Should throw exception when brand name exceeds max length")
-    void testValidateBrandWhenNameExceedsMaxLength() {
-        // Dado
-        String longName = "a".repeat(MAX_NAME_LENGTH + 1);
-        Brand brand = new Brand(1L, longName, "Sportswear brand");
-
-        // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            brandUseCase.validateBrand(brand);
-        });
-
-        assertEquals("The name must not exceed 50 characters", exception.getMessage());
-
-    }
-
-    @Test
-    @DisplayName("Should throw exception when brand description is empty")
-    void testValidateBrandWhenDescriptionIsEmpty() {
-        // Dado
-        Brand brand = new Brand(1L, "Nike", "");
-
-        // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            brandUseCase.saveBrand(brand);
-        });
-
-        // Entonces
-        assertEquals("The description cannot be empty", exception.getMessage());
-
-    }
-
-    @Test
-    @DisplayName("Should throw exception when brand description exceeds max length")
-    void testValidateBrandWhenDescriptionExceedsMaxLength() {
-        // Dado
-        String longDescription = "a".repeat(MAX_DESCRIPTION_LENGTH + 1);
-        Brand brand = new Brand(1L, "Nike", longDescription);
-
-        // Cuando
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            brandUseCase.saveBrand(brand);
-        });
-
-        // Entonces
-        assertEquals("The description must not exceed 120 characters", exception.getMessage());
-        verify(iBrandPersistencePort, never()).existsByName(anyString());
-        verify(iBrandPersistencePort, never()).saveBrand(any(Brand.class));
-    }
-
 
 
 

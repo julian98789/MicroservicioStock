@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "brand")
 @NoArgsConstructor
@@ -29,5 +31,8 @@ public class BrandEntity {
     @Size(max = 120)
     @Column(name = "description", length = 120)
     private String description;
+
+    @OneToMany(mappedBy = "brand")
+    private List<ArticleEntity> articles;
 
 }

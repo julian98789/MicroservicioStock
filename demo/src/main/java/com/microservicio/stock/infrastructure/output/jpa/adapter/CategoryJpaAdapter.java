@@ -1,7 +1,7 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
 import com.microservicio.stock.infrastructure.output.jpa.entity.CategoryEntity;
-import com.microservicio.stock.infrastructure.output.jpa.mapper.CategoryEntityMapper;
+import com.microservicio.stock.infrastructure.output.jpa.mapper.ICategoryEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.repository.ICategoryRepository;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
@@ -16,14 +16,14 @@ import java.util.List;
 public class CategoryJpaAdapter implements ICategoryPersistencePort {
 
     private final ICategoryRepository iCategoryRepository;
-    private final CategoryEntityMapper categoryEntityMapper;
+    private final ICategoryEntityMapper iCategoryEntityMapper;
 
 
     @Override
     public Category saveCategory(Category category) {
-        CategoryEntity categoryEntity = categoryEntityMapper.toEntity(category);
+        CategoryEntity categoryEntity = iCategoryEntityMapper.toEntity(category);
         CategoryEntity savedEntity = iCategoryRepository.save(categoryEntity);
-        return categoryEntityMapper.toCategory(savedEntity);
+        return iCategoryEntityMapper.toCategory(savedEntity);
     }
 
     @Override
@@ -40,7 +40,18 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
         Page<CategoryEntity> categoryEntities = iCategoryRepository.findAll(pageRequest);
 
         return categoryEntities.stream()
-                .map(categoryEntityMapper::toCategory).toList();
+                .map(iCategoryEntityMapper::toCategory).toList();
+
+    }
+
+    @Override
+    public List<Category> getCategoriesByIds(List<Long> ids) {
+        List<CategoryEntity> categoryEntities = iCategoryRepository.findAllById(ids);
+
+        // Convierte las entidades de categoría a modelos de dominio
+        return categoryEntities.stream()
+                .map(iCategoryEntityMapper::toCategory).toList();
+
 
     }
 }

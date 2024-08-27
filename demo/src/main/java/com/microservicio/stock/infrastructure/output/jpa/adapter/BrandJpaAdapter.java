@@ -5,6 +5,7 @@ import com.microservicio.stock.infrastructure.output.jpa.mapper.IBrandEntityMapp
 import com.microservicio.stock.infrastructure.output.jpa.repository.IBrandRepository;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,5 +41,14 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
 
         return brandEntities.stream()
                 .map(iBrandEntityMapper::toBrand).toList();
+    }
+
+    @Override
+    public Brand getBrandById(Long id) {
+        BrandEntity brandEntity = iBrandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Brand not found"));
+        return iBrandEntityMapper.toBrand(brandEntity);
+
+
     }
 }

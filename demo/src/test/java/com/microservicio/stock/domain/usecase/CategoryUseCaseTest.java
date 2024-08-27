@@ -1,8 +1,7 @@
 package com.microservicio.stock.domain.usecase;
 
 
-import com.microservicio.stock.domain.exception.custom.CategoryAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.InvalidBrandException;
+import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +20,6 @@ import static org.mockito.Mockito.*;
 
 class CategoryUseCaseTest {
 
-    private static final int MAX_NAME_LENGTH = 50;
-    private static final int MAX_DESCRIPTION_LENGTH = 90;
 
     @Mock
     private ICategoryPersistencePort iCategoryPersistencePort;
@@ -75,11 +72,11 @@ class CategoryUseCaseTest {
 
         when(iCategoryPersistencePort.existsByName(category.getName())).thenReturn(true);
 
-        CategoryAlreadyExistsException exception = assertThrows(CategoryAlreadyExistsException.class, () -> {
+        NameAlreadyExistsException exception = assertThrows(NameAlreadyExistsException.class, () -> {
             categoryUseCase.saveCategory(category);
         });
 
-        assertEquals("La categoría ya existe", exception.getMessage());
+        assertEquals("La categoria '" + category.getName() + "' ya existe", exception.getMessage());
         verify(iCategoryPersistencePort, times(1)).existsByName(category.getName());
         verify(iCategoryPersistencePort, never()).saveCategory(any(Category.class));
     }
@@ -122,63 +119,6 @@ class CategoryUseCaseTest {
         verify(iCategoryPersistencePort, times(1)).getCategories(0, 10, "name", true);
     }
 
-    @Test
-    @DisplayName("Should throw exception when category name is empty")
-    void testValidateCategoryWhenNameIsEmpty() {
-        Category category = new Category(1L, "", "Valid description");
-
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            categoryUseCase.validateCategory(category);
-        });
-
-        assertEquals("The name cannot be empty", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should throw exception when category name exceeds max length")
-    void testValidateCategoryWhenNameExceedsMaxLength() {
-        String longName = "a".repeat(MAX_NAME_LENGTH + 1);
-        Category category = new Category(1L, longName, "Valid description");
-
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            categoryUseCase.validateCategory(category);
-        });
-
-        assertEquals("The name must not exceed 50 characters", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should throw exception when category description is empty")
-    void testValidateCategoryWhenDescriptionIsEmpty() {
-        Category category = new Category(1L, "Valid name", "");
-
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            categoryUseCase.validateCategory(category);
-        });
-
-        assertEquals("The description cannot be empty", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should throw exception when category description exceeds max length")
-    void testValidateCategoryWhenDescriptionExceedsMaxLength() {
-        String longDescription = "a".repeat(MAX_DESCRIPTION_LENGTH + 1);
-        Category category = new Category(1L, "Valid name", longDescription);
-
-        InvalidBrandException exception = assertThrows(InvalidBrandException.class, () -> {
-            categoryUseCase.validateCategory(category);
-        });
-
-        assertEquals("The description must not exceed 120 characters", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should pass validation for valid category")
-    void testValidateCategoryWhenCategoryIsValid() {
-        Category category = new Category(1L, "Valid name", "Valid description");
-
-        assertDoesNotThrow(() -> categoryUseCase.validateCategory(category));
-    }
 
 
 }

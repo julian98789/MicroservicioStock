@@ -2,8 +2,8 @@ package com.microservicio.stock.application.handler.brandhandler;
 
 import com.microservicio.stock.application.dto.branddto.BrandRequest;
 import com.microservicio.stock.application.dto.branddto.BrandResponse;
-import com.microservicio.stock.application.mapper.brandmappper.IBrandRequestMappper;
-import com.microservicio.stock.application.mapper.brandmappper.IBrandResponseMappper;
+import com.microservicio.stock.application.mapper.brandmapper.IBrandRequestMapper;
+import com.microservicio.stock.application.mapper.brandmapper.IBrandResponseMapper;
 import com.microservicio.stock.domain.api.IBrandServicePort;
 import com.microservicio.stock.domain.model.Brand;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +17,14 @@ import java.util.List;
 @Transactional
 public class BrandHandler implements IBrandHandler {
     private final IBrandServicePort iBrandServicePort;
-    private final IBrandRequestMappper iBrandRequestMappper;
-    private final IBrandResponseMappper iBrandResponseMappper;
+    private final IBrandRequestMapper iBrandRequestMapper;
+    private final IBrandResponseMapper iBrandResponseMapper;
 
     @Override
     public BrandResponse savedBrand(BrandRequest brandRequest) {
-        String name = brandRequest.getName();
-        if (iBrandServicePort.existsByName(name)) {
-            throw new IllegalArgumentException("Marca con nombre '" + name + "' ya existe.");
-        }
-        Brand brand = iBrandRequestMappper.brandRequestToBrand(brandRequest);
+        Brand brand = iBrandRequestMapper.brandRequestToBrand(brandRequest);
         Brand savedBrand = iBrandServicePort.saveBrand(brand);
-        return iBrandResponseMappper.brandResponseToResponse(savedBrand);
+        return iBrandResponseMapper.brandResponseToResponse(savedBrand);
     }
 
 
@@ -36,6 +32,6 @@ public class BrandHandler implements IBrandHandler {
     public List<BrandResponse> getBrands(int page, int size, String sort, boolean ascending) {
          List<Brand> brands = iBrandServicePort.getBrands( page,  size,  sort,  ascending);
          return brands.stream()
-                 .map(iBrandResponseMappper::brandResponseToResponse).toList();
+                 .map(iBrandResponseMapper::brandResponseToResponse).toList();
     }
 }
