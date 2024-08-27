@@ -4,6 +4,7 @@ import com.microservicio.stock.domain.api.ICategoryServicePort;
 import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
+import com.microservicio.stock.domain.util.Util;
 
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     public Category saveCategory(Category category) {
 
         if (iCategoryPersistencePort.existsByName(category.getName())) {
-            throw new NameAlreadyExistsException("La categoria '" +category.getName()+"' ya existe");
+            throw new NameAlreadyExistsException(Util.NAME_ALREADY_EXISTS);
         }
         return iCategoryPersistencePort.saveCategory(category);
     }

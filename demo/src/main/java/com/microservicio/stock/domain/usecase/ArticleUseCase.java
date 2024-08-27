@@ -6,6 +6,7 @@ import com.microservicio.stock.domain.exception.custom.RepeatedCategoryException
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
+import com.microservicio.stock.domain.util.Util;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,9 +22,8 @@ public class ArticleUseCase implements IArticleServicePort {
 
     @Override
     public Article saveArticle(Article article) {
-        validateUniqueCategories(article.getCategories());
         if (articlePersistencePort.existsByName(article.getName())) {
-            throw new NameAlreadyExistsException("el article '" +article.getName()+"' ya existe");
+            throw new NameAlreadyExistsException(Util.NAME_ALREADY_EXISTS);
         }
         return articlePersistencePort.saveArticle(article);
     }
@@ -33,11 +33,4 @@ public class ArticleUseCase implements IArticleServicePort {
         return articlePersistencePort.getArticles(page, size, sort, ascending);
     }
 
-    private void validateUniqueCategories(List<Category> categories) {
-        Set<Category> uniqueCategories = new HashSet<>(categories);
-
-        if (uniqueCategories.size() != categories.size()) {
-            throw new RepeatedCategoryException("La lista de categorías contiene elementos duplicados.");
-        }
-    }
 }
