@@ -22,10 +22,6 @@ public class BrandHandler implements IBrandHandler {
 
     @Override
     public BrandResponse savedBrand(BrandRequest brandRequest) {
-        String name = brandRequest.getName();
-        if (iBrandServicePort.existsByName(name)) {
-            throw new IllegalArgumentException("Marca con nombre '" + name + "' ya existe.");
-        }
         Brand brand = iBrandRequestMapper.brandRequestToBrand(brandRequest);
         Brand savedBrand = iBrandServicePort.saveBrand(brand);
         return iBrandResponseMapper.brandResponseToResponse(savedBrand);

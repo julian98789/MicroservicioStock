@@ -1,17 +1,15 @@
 package com.microservicio.stock.domain.usecase;
 
 import com.microservicio.stock.domain.api.ICategoryServicePort;
-import com.microservicio.stock.domain.exception.custom.CategoryAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.ValidationExceptions;
+import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
+
 
 import java.util.List;
 
 public class CategoryUseCase implements ICategoryServicePort {
 
-    private static final int MAX_NAME_LENGTH = 50;
-    private static final int MAX_DESCRIPTION_LENGTH = 90;
 
     private final ICategoryPersistencePort iCategoryPersistencePort;
 
@@ -21,10 +19,9 @@ public class CategoryUseCase implements ICategoryServicePort {
 
     @Override
     public Category saveCategory(Category category) {
-        validateCategory( category);
 
         if (iCategoryPersistencePort.existsByName(category.getName())) {
-            throw new CategoryAlreadyExistsException("La categoría ya existe");
+            throw new NameAlreadyExistsException("La categoria '" +category.getName()+"' ya existe");
         }
         return iCategoryPersistencePort.saveCategory(category);
     }
@@ -36,21 +33,6 @@ public class CategoryUseCase implements ICategoryServicePort {
     @Override
     public List<Category> getCategories(int page, int size, String sort, boolean ascending) {
         return iCategoryPersistencePort.getCategories(page, size, sort, ascending);
-    }
-
-    public void validateCategory(Category category) {
-        if (category.getName() == null || category.getName().isEmpty()) {
-            throw new ValidationExceptions("The name cannot be empty");
-        }
-        if (category.getName().length() > MAX_NAME_LENGTH) {
-            throw new ValidationExceptions("The name must not exceed 50 characters");
-        }
-        if (category.getDescription() == null || category.getDescription().isEmpty()) {
-            throw new ValidationExceptions("The description cannot be empty");
-        }
-        if (category.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
-            throw new ValidationExceptions("The description must not exceed 120 characters");
-        }
     }
     
 }

@@ -4,6 +4,7 @@ import com.microservicio.stock.application.dto.articledto.ArticleRequest;
 import com.microservicio.stock.application.dto.articledto.ArticleResponse;
 import com.microservicio.stock.application.mapper.articlemapper.IArticleRequestMapper;
 import com.microservicio.stock.application.mapper.articlemapper.IArticleResponseMapper;
+import com.microservicio.stock.domain.api.IArticleServicePort;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
@@ -13,15 +14,14 @@ import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ArticleHandler implements IArticleHandler {
 
+    private final IArticleServicePort iArticleServicePort;
     private final IArticlePersistencePort articlePersistencePort;
     private final IArticleRequestMapper articleRequestMapper;
     private final IArticleResponseMapper articleResponseMapper;
@@ -31,23 +31,19 @@ public class ArticleHandler implements IArticleHandler {
     @Override
     public ArticleResponse saveArticle(ArticleRequest articleRequest) {
 
-        String name = articleRequest.getName();
-        if (articlePersistencePort.existsByName(name)) {
-            throw new IllegalArgumentException("Articulo con nombre '" + name + "' ya existe.");
-        }
-
         Article article = articleRequestMapper.articleRequestToArticle(articleRequest);
 
         Brand brand = brandPersistencePort.getBrandById(articleRequest.getBrandId());
         article.setBrand(brand);
 
-        Set<Category> categories = categoryPersistencePort.getCategoriesByIds(articleRequest.getCategoryIds());
+        List<Category> categories = categoryPersistencePort.getCategoriesByIds(articleRequest.getCategoryIds());
         article.setCategories(categories);
 
-        Article savedArticle = articlePersistencePort.saveArticle(article);
+        Article savedArticle = iArticleServicePort.saveArticle(article);
 
         return articleResponseMapper.toArticleResponseDto(savedArticle);
     }
+
 
 
     @Override

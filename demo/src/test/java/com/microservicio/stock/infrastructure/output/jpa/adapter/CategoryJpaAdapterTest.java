@@ -1,9 +1,9 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
 import com.microservicio.stock.domain.model.Category;
-import com.microservicio.stock.domain.exception.custom.CategoryAlreadyExistsException;
+import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.infrastructure.output.jpa.entity.CategoryEntity;
-import com.microservicio.stock.infrastructure.output.jpa.mapper.CategoryEntityMapper;
+import com.microservicio.stock.infrastructure.output.jpa.mapper.ICategoryEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.repository.ICategoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,8 @@ import static org.mockito.Mockito.*;
 
 class CategoryJpaAdapterTest {
     private final ICategoryRepository iCategoryRepository = Mockito.mock(ICategoryRepository.class);
-    private final CategoryEntityMapper categoryEntityMapper = Mockito.mock(CategoryEntityMapper.class);
-    private final CategoryJpaAdapter categoryJpaAdapter = new CategoryJpaAdapter(iCategoryRepository, categoryEntityMapper);
+    private final ICategoryEntityMapper iCategoryEntityMapper = Mockito.mock(ICategoryEntityMapper.class);
+    private final CategoryJpaAdapter categoryJpaAdapter = new CategoryJpaAdapter(iCategoryRepository, iCategoryEntityMapper);
 
     @Test
     @DisplayName("Successfully save category")
@@ -30,9 +30,9 @@ class CategoryJpaAdapterTest {
         categoryEntity.setName("Electronics");
         categoryEntity.setDescription("Devices and gadgets");
 
-        when(categoryEntityMapper.toEntity(category)).thenReturn(categoryEntity);
+        when(iCategoryEntityMapper.toEntity(category)).thenReturn(categoryEntity);
         when(iCategoryRepository.save(categoryEntity)).thenReturn(categoryEntity);
-        when(categoryEntityMapper.toCategory(categoryEntity)).thenReturn(category);
+        when(iCategoryEntityMapper.toCategory(categoryEntity)).thenReturn(category);
 
         // Cuando
         Category savedCategory = categoryJpaAdapter.saveCategory(category);
@@ -56,8 +56,8 @@ class CategoryJpaAdapterTest {
         boolean exists = categoryJpaAdapter.existsByName(category.getName());
 
         if (exists) {
-            assertThrows(CategoryAlreadyExistsException.class, () -> {
-                throw new CategoryAlreadyExistsException("La categoría ya existe");
+            assertThrows(NameAlreadyExistsException.class, () -> {
+                throw new NameAlreadyExistsException("La categoría ya existe");
             });
 
         }

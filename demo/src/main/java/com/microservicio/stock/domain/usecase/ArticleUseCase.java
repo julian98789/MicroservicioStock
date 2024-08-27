@@ -1,11 +1,15 @@
 package com.microservicio.stock.domain.usecase;
 
 import com.microservicio.stock.domain.api.IArticleServicePort;
-import com.microservicio.stock.domain.exception.custom.ValidationExceptions;
+import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
+import com.microservicio.stock.domain.exception.custom.RepeatedCategoryException;
 import com.microservicio.stock.domain.model.Article;
+import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ArticleUseCase implements IArticleServicePort {
 
@@ -17,7 +21,10 @@ public class ArticleUseCase implements IArticleServicePort {
 
     @Override
     public Article saveArticle(Article article) {
-        validateArticle(article);
+        validateUniqueCategories(article.getCategories());
+        if (articlePersistencePort.existsByName(article.getName())) {
+            throw new NameAlreadyExistsException("el article '" +article.getName()+"' ya existe");
+        }
         return articlePersistencePort.saveArticle(article);
     }
 
@@ -26,18 +33,11 @@ public class ArticleUseCase implements IArticleServicePort {
         return articlePersistencePort.getArticles(page, size, sort, ascending);
     }
 
+    private void validateUniqueCategories(List<Category> categories) {
+        Set<Category> uniqueCategories = new HashSet<>(categories);
 
-    private void validateArticle(Article article) {
-        if (article.getCategories() == null || article.getCategories().isEmpty()) {
-            throw new ValidationExceptions("El artículo debe tener al menos una categoría.");
+        if (uniqueCategories.size() != categories.size()) {
+            throw new RepeatedCategoryException("La lista de categorías contiene elementos duplicados.");
         }
-        if (article.getCategories().size() > 3) {
-            throw new ValidationExceptions("El artículo no puede tener más de tres categorías.");
-        }
-
-        if (article.getName() == null || article.getName().isEmpty()) {
-            throw new ValidationExceptions("El nombre del artículo no puede estar vacío.");
-        }
-
     }
 }

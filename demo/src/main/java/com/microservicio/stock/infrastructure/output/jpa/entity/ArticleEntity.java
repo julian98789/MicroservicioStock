@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "article")
@@ -43,6 +43,6 @@ public class ArticleEntity {
             joinColumns = @JoinColumn(name = "id_article"),
             inverseJoinColumns = @JoinColumn(name = "id_category")
     )
-    private Set<CategoryEntity> categories = new HashSet<>();
+    private List<CategoryEntity> categories = new ArrayList<>();
 
 }

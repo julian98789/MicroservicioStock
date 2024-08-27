@@ -5,7 +5,7 @@ import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 import com.microservicio.stock.domain.usecase.ArticleUseCase;
 import com.microservicio.stock.infrastructure.output.jpa.adapter.ArticleJpaAdapter;
 import com.microservicio.stock.infrastructure.output.jpa.adapter.CategoryJpaAdapter;
-import com.microservicio.stock.infrastructure.output.jpa.mapper.CategoryEntityMapper;
+import com.microservicio.stock.infrastructure.output.jpa.mapper.ICategoryEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.IArticleEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.IBrandEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.repository.IArticleRepository;
@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 public class BeanConfiguration {
 
     private final ICategoryRepository categoryRepository;
-    private final CategoryEntityMapper categoryEntityMapper;
+    private final ICategoryEntityMapper iCategoryEntityMapper;
     private final IBrandRepository brandRepository;
     private final IBrandEntityMapper iBrandEntityMapper;
     private final IArticleRepository iArticleRepository;
@@ -37,7 +37,7 @@ public class BeanConfiguration {
 
     @Bean
     public ICategoryPersistencePort categoryPersistencePort(){
-        return new CategoryJpaAdapter(categoryRepository, categoryEntityMapper);
+        return new CategoryJpaAdapter(categoryRepository, iCategoryEntityMapper);
     }
 
     @Bean

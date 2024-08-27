@@ -22,10 +22,6 @@ public class CategoryHandler implements ICategoryHandler {
 
     @Override
     public CategoryResponse saveCategory(CategoriRequest categoriRequest) {
-        String name = categoriRequest.getName();
-        if (iCategoryServicePort.existsByName(name)) {
-            throw new IllegalArgumentException("Categoría con nombre '" + name + "' ya existe.");
-        }
         Category category = iCategoryRequestMapper.categoryRequestToCategory(categoriRequest);
         Category savedCategory = iCategoryServicePort.saveCategory(category);
         return iCategoryResponseMapper.categoryResponseToResponse(savedCategory);

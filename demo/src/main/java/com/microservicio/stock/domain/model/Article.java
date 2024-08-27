@@ -1,7 +1,7 @@
 package com.microservicio.stock.domain.model;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 public class Article {
     private Long id;
@@ -10,9 +10,9 @@ public class Article {
     private int quantity;
     private BigDecimal price;
     private Brand brand;
-    private Set<Category> categories;
+    private List<Category> categories;
 
-    public Article(Long id, String name, String description, int quantity, BigDecimal price, Brand brand, Set<Category> categories) {
+    public Article(Long id, String name, String description, int quantity, BigDecimal price, Brand brand, List<Category> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -70,11 +70,11 @@ public class Article {
         this.brand = brand;
     }
 
-    public Set<Category> getCategories() {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Category> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 }

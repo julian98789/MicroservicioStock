@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,5 +30,5 @@ public class ArticleRequest {
 
     @NotEmpty(message = "Debe proporcionar al menos una categoría.")
     @Size(min = 1,max = 3, message = "El artículo debe tener entre 1 y 3 categorías")
-    private Set<Long> categoryIds;
+    private List<Long> categoryIds;
 }

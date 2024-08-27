@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,6 +18,6 @@ public class ArticleResponse {
     private Integer quantity;
     private BigDecimal price;
     private BrandResponse brand;
-    private Set<CategoryResponse> categories;
+    private List<CategoryResponse> categories;
 
 }

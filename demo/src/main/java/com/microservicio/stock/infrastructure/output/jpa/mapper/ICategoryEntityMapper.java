@@ -9,7 +9,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 
-public interface CategoryEntityMapper {
+public interface ICategoryEntityMapper {
 
     CategoryEntity toEntity(Category category);
 

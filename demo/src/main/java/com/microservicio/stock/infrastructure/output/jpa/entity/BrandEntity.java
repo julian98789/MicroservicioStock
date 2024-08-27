@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "brand")
@@ -33,6 +33,6 @@ public class BrandEntity {
     private String description;
 
     @OneToMany(mappedBy = "brand")
-    private Set<ArticleEntity> articles;
+    private List<ArticleEntity> articles;
 
 }
