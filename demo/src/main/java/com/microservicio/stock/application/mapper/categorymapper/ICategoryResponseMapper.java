@@ -1,5 +1,6 @@
 package com.microservicio.stock.application.mapper.categorymapper;
 
+import com.microservicio.stock.application.dto.categorydto.CategoryRelationArticleResponse;
 import com.microservicio.stock.application.dto.categorydto.CategoryResponse;
 import com.microservicio.stock.domain.model.Category;
 import org.mapstruct.Mapper;
@@ -11,4 +12,5 @@ import org.mapstruct.ReportingPolicy;
 public interface ICategoryResponseMapper {
 
     CategoryResponse categoryResponseToResponse(Category category);
+    CategoryRelationArticleResponse categorRelationArticleToResponse(Category category);
 }

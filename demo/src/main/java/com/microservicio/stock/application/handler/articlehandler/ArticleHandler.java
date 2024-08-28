@@ -8,6 +8,7 @@ import com.microservicio.stock.domain.api.IArticleServicePort;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
+import com.microservicio.stock.domain.pagination.PaginatedResult;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
@@ -44,14 +45,22 @@ public class ArticleHandler implements IArticleHandler {
         return articleResponseMapper.toArticleResponseDto(savedArticle);
     }
 
-
-
     @Override
-    public List<ArticleResponse> listArticles(int page, int size, String sort, boolean ascending) {
-        List<Article> articles = articlePersistencePort.getArticles(page, size, sort, ascending);
+    public PaginatedResult<ArticleResponse> listArticles(int page, int size, String sortField, boolean ascending) {
+        PaginatedResult<Article> paginatedArticles = articlePersistencePort.listArticles(page, size, sortField, ascending);
 
-        return articles.stream()
+        // Mapea los artículos a DTOs
+        List<ArticleResponse> articleResponses = paginatedArticles.getContent().stream()
                 .map(articleResponseMapper::toArticleResponseDto).toList();
 
+        return new PaginatedResult<>(
+                articleResponses,
+                paginatedArticles.getPageNumber(),
+                paginatedArticles.getPageSize(),
+                paginatedArticles.getTotalElements()
+        );
+
     }
+
+
 }

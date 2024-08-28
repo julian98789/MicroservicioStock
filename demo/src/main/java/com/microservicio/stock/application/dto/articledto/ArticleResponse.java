@@ -1,7 +1,7 @@
 package com.microservicio.stock.application.dto.articledto;
 
 import com.microservicio.stock.application.dto.branddto.BrandResponse;
-import com.microservicio.stock.application.dto.categorydto.CategoryResponse;
+import com.microservicio.stock.application.dto.categorydto.CategoryRelationArticleResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +18,6 @@ public class ArticleResponse {
     private Integer quantity;
     private BigDecimal price;
     private BrandResponse brand;
-    private List<CategoryResponse> categories;
+    private List<CategoryRelationArticleResponse> categories;
 
 }

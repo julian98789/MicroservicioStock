@@ -15,4 +15,6 @@ public interface IArticleResponseMapper {
     @Mapping(target = "brand", source = "brand")
     ArticleResponse toArticleResponseDto(Article article);
 
+
+
 }

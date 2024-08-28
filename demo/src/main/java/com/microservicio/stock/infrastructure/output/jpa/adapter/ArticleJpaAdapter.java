@@ -1,6 +1,7 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
 import com.microservicio.stock.domain.model.Article;
+import com.microservicio.stock.domain.pagination.PaginatedResult;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 import com.microservicio.stock.infrastructure.output.jpa.entity.ArticleEntity;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.IArticleEntityMapper;
@@ -28,14 +29,25 @@ public class ArticleJpaAdapter implements IArticlePersistencePort {
     }
 
     @Override
-    public List<Article> getArticles(int page, int size, String sort, boolean ascending) {
-        Page<ArticleEntity> articleEntities = articleRepository.findAll(PageRequest.of(page, size, Sort.by(sort)));
+    public PaginatedResult<Article> listArticles(int page, int size, String sortBy, boolean ascending) {
+        Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        return articleEntities.stream()
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<ArticleEntity> articleEntities = articleRepository.findAll(pageRequest);
+
+        List<Article> articles = articleEntities.stream()
                 .map(articleEntityMapper::toModel).toList();
 
 
+        return new PaginatedResult<>(
+                articles,
+                articleEntities.getNumber(),
+                articleEntities.getSize(),
+                articleEntities.getTotalElements()
+        );
     }
+
 
     @Override
     public boolean existsByName(String name) {

@@ -48,7 +48,6 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public List<Category> getCategoriesByIds(List<Long> ids) {
         List<CategoryEntity> categoryEntities = iCategoryRepository.findAllById(ids);
 
-        // Convierte las entidades de categoría a modelos de dominio
         return categoryEntities.stream()
                 .map(iCategoryEntityMapper::toCategory).toList();
 

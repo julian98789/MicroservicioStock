@@ -2,12 +2,12 @@ package com.microservicio.stock.application.handler.articlehandler;
 
 import com.microservicio.stock.application.dto.articledto.ArticleRequest;
 import com.microservicio.stock.application.dto.articledto.ArticleResponse;
+import com.microservicio.stock.domain.pagination.PaginatedResult;
 
-import java.util.List;
 
 public interface IArticleHandler {
     ArticleResponse saveArticle(ArticleRequest articleRequest);
 
-    List<ArticleResponse> listArticles(int page, int size, String sort, boolean ascending);
+    PaginatedResult<ArticleResponse> listArticles(int page, int size, String sortField, boolean ascending);
 
 }

@@ -1,12 +1,12 @@
 package com.microservicio.stock.domain.spi;
 
 import com.microservicio.stock.domain.model.Article;
+import com.microservicio.stock.domain.pagination.PaginatedResult;
 
-import java.util.List;
 
 public interface IArticlePersistencePort {
     Article saveArticle(Article article);
-    List<Article> getArticles(int page, int size, String sort, boolean ascending);
+    PaginatedResult<Article> listArticles(int page, int size, String sortBy, boolean ascending);
     boolean existsByName(String name);
 
 }
