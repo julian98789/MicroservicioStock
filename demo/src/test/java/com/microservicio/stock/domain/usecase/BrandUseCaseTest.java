@@ -3,6 +3,7 @@ package com.microservicio.stock.domain.usecase;
 import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
+import com.microservicio.stock.domain.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,7 @@ class BrandUseCaseTest {
 
 
         // Entonces
-        assertEquals("La marca '" + brand.getName() + "' ya existe", exception.getMessage());
+        assertEquals(Util.BRAND_NAME_ALREADY_EXISTS, exception.getMessage());
         verify(iBrandPersistencePort, times(1)).existsByName(brand.getName());
         verify(iBrandPersistencePort, never()).saveBrand(any(Brand.class));
     }

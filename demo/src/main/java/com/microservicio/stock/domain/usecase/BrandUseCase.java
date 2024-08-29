@@ -19,7 +19,7 @@ public class BrandUseCase implements IBrandServicePort {
     @Override
     public Brand saveBrand(Brand brand) {
         if (iBrandPersistencePort.existsByName(brand.getName())) {
-            throw new NameAlreadyExistsException(Util.NAME_ALREADY_EXISTS);
+            throw new NameAlreadyExistsException(Util.BRAND_NAME_ALREADY_EXISTS);
         }
         return iBrandPersistencePort.saveBrand(brand);
     }

@@ -4,6 +4,7 @@ package com.microservicio.stock.domain.usecase;
 import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
+import com.microservicio.stock.domain.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,7 +77,7 @@ class CategoryUseCaseTest {
             categoryUseCase.saveCategory(category);
         });
 
-        assertEquals("La categoria '" + category.getName() + "' ya existe", exception.getMessage());
+        assertEquals(Util.CATEGORY_NAME_ALREADY_EXISTS, exception.getMessage());
         verify(iCategoryPersistencePort, times(1)).existsByName(category.getName());
         verify(iCategoryPersistencePort, never()).saveCategory(any(Category.class));
     }

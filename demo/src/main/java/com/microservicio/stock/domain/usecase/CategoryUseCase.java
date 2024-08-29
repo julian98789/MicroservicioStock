@@ -22,7 +22,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     public Category saveCategory(Category category) {
 
         if (iCategoryPersistencePort.existsByName(category.getName())) {
-            throw new NameAlreadyExistsException(Util.NAME_ALREADY_EXISTS);
+            throw new NameAlreadyExistsException(Util.CATEGORY_NAME_ALREADY_EXISTS);
         }
         return iCategoryPersistencePort.saveCategory(category);
     }

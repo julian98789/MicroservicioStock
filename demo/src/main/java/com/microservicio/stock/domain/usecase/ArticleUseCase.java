@@ -18,7 +18,7 @@ public class ArticleUseCase implements IArticleServicePort {
     @Override
     public Article saveArticle(Article article) {
         if (articlePersistencePort.existsByName(article.getName())) {
-            throw new NameAlreadyExistsException(Util.NAME_ALREADY_EXISTS);
+            throw new NameAlreadyExistsException(Util.ARTICLE_NAME_ALREADY_EXISTS);
         }
         return articlePersistencePort.saveArticle(article);
     }
