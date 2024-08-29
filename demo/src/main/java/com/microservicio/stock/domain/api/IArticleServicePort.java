@@ -1,7 +1,7 @@
 package com.microservicio.stock.domain.api;
 
 import com.microservicio.stock.domain.model.Article;
-import com.microservicio.stock.domain.pagination.PaginatedResult;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
 
 public interface IArticleServicePort {

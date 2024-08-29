@@ -6,6 +6,7 @@ import com.microservicio.stock.application.mapper.categorymapper.ICategoryReques
 import com.microservicio.stock.application.mapper.categorymapper.ICategoryResponseMapper;
 import com.microservicio.stock.domain.api.ICategoryServicePort;
 import com.microservicio.stock.domain.model.Category;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +30,17 @@ public class CategoryHandler implements ICategoryHandler {
 
 
     @Override
-    public List<CategoryResponse> getCategories(int page, int size, String sort, boolean ascending) {
-        List<Category> categories = iCategoryServicePort.getCategories(page, size, sort, ascending);
-        return categories.stream()
-                .map(iCategoryResponseMapper::categoryResponseToResponse).toList();
+    public PaginatedResult<CategoryResponse> getCategories(int page, int size, String sort, boolean ascending) {
+        PaginatedResult<Category> categories = iCategoryServicePort.getCategories(page, size, sort, ascending);
+        List<CategoryResponse> categoryResponses = categories.getContent().stream()
+                .map(iCategoryResponseMapper::categoryResponseToResponse)
+                .toList();
 
+        return new PaginatedResult<>(
+                categoryResponses,
+                categories.getPageNumber(),
+                categories.getPageSize(),
+                categories.getTotalElements()
+        );
     }
 }

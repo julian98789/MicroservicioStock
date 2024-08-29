@@ -1,6 +1,7 @@
 package com.microservicio.stock.domain.api;
 
 import com.microservicio.stock.domain.model.Brand;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ public interface IBrandServicePort {
 
     boolean existsByName(String name);
 
-    List<Brand> getBrands(int page, int size, String sort, boolean ascending);
+    PaginatedResult<Brand> getBrands(int page, int size, String sort, boolean ascending);
 }

@@ -6,6 +6,7 @@ import com.microservicio.stock.application.mapper.brandmapper.IBrandRequestMappe
 import com.microservicio.stock.application.mapper.brandmapper.IBrandResponseMapper;
 import com.microservicio.stock.domain.api.IBrandServicePort;
 import com.microservicio.stock.domain.model.Brand;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +30,18 @@ public class BrandHandler implements IBrandHandler {
 
 
     @Override
-    public List<BrandResponse> getBrands(int page, int size, String sort, boolean ascending) {
-         List<Brand> brands = iBrandServicePort.getBrands( page,  size,  sort,  ascending);
-         return brands.stream()
-                 .map(iBrandResponseMapper::brandResponseToResponse).toList();
+    public PaginatedResult<BrandResponse> getBrands(int page, int size, String sort, boolean ascending) {
+        PaginatedResult<Brand> brands = iBrandServicePort.getBrands(page, size, sort, ascending);
+
+        List<BrandResponse> brandResponses = brands.getContent().stream()
+                .map(iBrandResponseMapper::brandResponseToResponse)
+                .toList();
+
+        return new PaginatedResult<>(
+                brandResponses,
+                brands.getPageNumber(),
+                brands.getPageSize(),
+                brands.getTotalElements()
+        );
     }
 }

@@ -1,4 +1,4 @@
-package com.microservicio.stock.domain.pagination;
+package com.microservicio.stock.domain.util.pagination;
 
 import java.util.List;
 

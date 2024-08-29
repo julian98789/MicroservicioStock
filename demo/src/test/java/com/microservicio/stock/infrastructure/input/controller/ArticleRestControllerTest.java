@@ -6,7 +6,7 @@ import com.microservicio.stock.application.dto.articledto.ArticleRequest;
 import com.microservicio.stock.application.dto.articledto.ArticleResponse;
 import com.microservicio.stock.application.dto.branddto.BrandResponse;
 import com.microservicio.stock.application.handler.articlehandler.IArticleHandler;
-import com.microservicio.stock.domain.pagination.PaginatedResult;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

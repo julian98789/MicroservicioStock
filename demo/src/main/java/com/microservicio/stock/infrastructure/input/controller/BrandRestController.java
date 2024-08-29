@@ -1,8 +1,10 @@
 package com.microservicio.stock.infrastructure.input.controller;
 
+import com.microservicio.stock.application.dto.articledto.ArticleResponse;
 import com.microservicio.stock.application.dto.branddto.BrandRequest;
 import com.microservicio.stock.application.dto.branddto.BrandResponse;
 import com.microservicio.stock.application.handler.brandhandler.IBrandHandler;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -80,11 +82,13 @@ public class BrandRestController {
                     )
             )
     })
-    public List<BrandResponse> getBrands(
+    public ResponseEntity<PaginatedResult<BrandResponse>> listBrand(
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "10") @Min(1)int size,
             @RequestParam(defaultValue = "name") @NotBlank @Size(min = 1)String sort,
             @RequestParam(defaultValue = "true") boolean ascending) {
-        return iBrandHandler.getBrands(page, size, sort, ascending);
+        PaginatedResult<BrandResponse> paginatedResult = iBrandHandler.getBrands(page, size, sort, ascending);
+
+        return new ResponseEntity<>(paginatedResult, HttpStatus.OK);
     }
 }

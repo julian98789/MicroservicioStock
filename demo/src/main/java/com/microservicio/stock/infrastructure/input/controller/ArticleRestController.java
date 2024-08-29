@@ -3,7 +3,7 @@ package com.microservicio.stock.infrastructure.input.controller;
 import com.microservicio.stock.application.dto.articledto.ArticleRequest;
 import com.microservicio.stock.application.dto.articledto.ArticleResponse;
 import com.microservicio.stock.application.handler.articlehandler.IArticleHandler;
-import com.microservicio.stock.domain.pagination.PaginatedResult;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

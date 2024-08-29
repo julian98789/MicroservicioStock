@@ -1,5 +1,6 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.infrastructure.output.jpa.entity.BrandEntity;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.IBrandEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.repository.IBrandRepository;
@@ -32,18 +33,27 @@ public class BrandJpaAdapter implements IBrandPersistencePort {
     }
 
     @Override
-    public List<Brand> getBrands(int page, int size, String sort, boolean ascending) {
+    public PaginatedResult<Brand> getBrands(int page, int size, String sort, boolean ascending) {
         Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sort));
 
         Page<BrandEntity> brandEntities = iBrandRepository.findAll(pageRequest);
 
-        return brandEntities.stream()
-                .map(iBrandEntityMapper::toBrand).toList();
+        List<Brand> brands = brandEntities.stream()
+                .map(iBrandEntityMapper::toBrand)
+                .toList();
+
+        // Devolver el resultado paginado con la lista mapeada y la información de paginación
+        return new PaginatedResult<>(
+                brands,
+                brandEntities.getNumber(),
+                brandEntities.getSize(),
+                brandEntities.getTotalElements()
+        );
     }
 
-    @Override
+        @Override
     public Brand getBrandById(Long id) {
         BrandEntity brandEntity = iBrandRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Brand not found"));

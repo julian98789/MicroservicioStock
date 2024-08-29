@@ -5,6 +5,7 @@ import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsExceptio
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
 import com.microservicio.stock.domain.util.Util;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     }
 
     @Override
-    public List<Category> getCategories(int page, int size, String sort, boolean ascending) {
+    public PaginatedResult<Category> getCategories(int page, int size, String sort, boolean ascending) {
         return iCategoryPersistencePort.getCategories(page, size, sort, ascending);
     }
     

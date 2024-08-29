@@ -9,7 +9,7 @@ import com.microservicio.stock.domain.api.IArticleServicePort;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
-import com.microservicio.stock.domain.pagination.PaginatedResult;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

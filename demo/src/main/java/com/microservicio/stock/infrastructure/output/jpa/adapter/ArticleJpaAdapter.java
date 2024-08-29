@@ -1,7 +1,7 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
 import com.microservicio.stock.domain.model.Article;
-import com.microservicio.stock.domain.pagination.PaginatedResult;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 import com.microservicio.stock.infrastructure.output.jpa.entity.ArticleEntity;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.IArticleEntityMapper;

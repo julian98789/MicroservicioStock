@@ -4,7 +4,7 @@ import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsExceptio
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
-import com.microservicio.stock.domain.pagination.PaginatedResult;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
