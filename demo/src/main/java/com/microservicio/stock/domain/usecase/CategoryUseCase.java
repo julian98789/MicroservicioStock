@@ -8,8 +8,6 @@ import com.microservicio.stock.domain.util.Util;
 import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
 
-import java.util.List;
-
 public class CategoryUseCase implements ICategoryServicePort {
 
 

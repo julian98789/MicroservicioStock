@@ -3,8 +3,6 @@ package com.microservicio.stock.domain.api;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
-import java.util.List;
-
 
 public interface ICategoryServicePort {
 

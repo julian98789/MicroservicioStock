@@ -1,6 +1,5 @@
 package com.microservicio.stock.infrastructure.input.controller;
 
-import com.microservicio.stock.application.dto.articledto.ArticleResponse;
 import com.microservicio.stock.application.dto.branddto.BrandRequest;
 import com.microservicio.stock.application.dto.branddto.BrandResponse;
 import com.microservicio.stock.application.handler.brandhandler.IBrandHandler;
@@ -19,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/brand")

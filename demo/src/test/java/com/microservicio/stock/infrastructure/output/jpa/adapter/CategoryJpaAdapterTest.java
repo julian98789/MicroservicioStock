@@ -1,6 +1,7 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
 import com.microservicio.stock.domain.model.Category;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.infrastructure.output.jpa.entity.CategoryEntity;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.ICategoryEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.repository.ICategoryRepository;
@@ -87,34 +88,28 @@ class CategoryJpaAdapterTest {
         assertFalse(result);
         verify(iCategoryRepository).findByName(name);
     }
-
     @Test
-    @DisplayName("Retrieve paginated categories")
-    void getCategories_shouldReturnPaginatedCategories() {
-        int page = 0;
-        int size = 10;
-        String sort = "name";
-        boolean ascending = true;
+    @DisplayName("Test listCategory returns a paginated list of Category")
+    void testListCategory() {
 
-        CategoryEntity categoryEntity = new CategoryEntity();
-        List<CategoryEntity> categoryEntities = List.of(categoryEntity);
-        Page<CategoryEntity> pageResult = new PageImpl<>(categoryEntities);
+        Category category = new Category(1L, "Category Name", "Category Description");
+        CategoryEntity categoriEntity = new CategoryEntity();
+        List<CategoryEntity> categoriEntities = List.of(categoriEntity);
+        Page<CategoryEntity> categoryPage = new PageImpl<>(categoriEntities, PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name")), 1);
 
-        when(iCategoryRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sort))))
-                .thenReturn(pageResult);
-        when(iCategoryEntityMapper.toCategory(categoryEntity))
-                .thenReturn(new Category(1L, "Test Category", "Category Description"));
+        when(iCategoryRepository.findAll(any(PageRequest.class))).thenReturn(categoryPage);
+        when(iCategoryEntityMapper.toCategory(categoriEntity)).thenReturn(category);
 
-        List<Category> result = categoryJpaAdapter.getCategories(page, size, sort, ascending);
+        PaginatedResult<Category> result = categoryJpaAdapter.getCategories(0, 10, "name", true);
 
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(1L, result.get(0).getId());
-        assertEquals("Test Category", result.get(0).getName());
-        assertEquals("Category Description", result.get(0).getDescription());
-        verify(iCategoryRepository).findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sort)));
-        verify(iCategoryEntityMapper).toCategory(categoryEntity);
+        assertEquals(1, result.getContent().size(), "The content size should be 1");
+        assertEquals(category, result.getContent().get(0), "The article should match");
+        assertEquals(0, result.getPageNumber(), "The page number should be 0");
+        assertEquals(10, result.getPageSize(), "The page size should be 10");
+        assertEquals(1, result.getTotalElements(), "The total elements should be 1");
     }
+
+
 
     @Test
     @DisplayName("Retrieve categories by a list of IDs")

@@ -7,7 +7,6 @@ import com.microservicio.stock.domain.spi.IBrandPersistencePort;
 import com.microservicio.stock.domain.util.Util;
 import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
-import java.util.List;
 
 public class BrandUseCase implements IBrandServicePort {
 

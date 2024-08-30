@@ -1,6 +1,7 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
 import com.microservicio.stock.domain.model.Brand;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.infrastructure.output.jpa.entity.BrandEntity;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.IBrandEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.repository.IBrandRepository;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -92,37 +94,6 @@ class BrandJpaAdapterTest {
         verify(iBrandRepository).findByName(name);
     }
 
-    @Test
-    @DisplayName("Retrieve paginated brands")
-    void getBrands_shouldReturnPaginatedBrands() {
-        int page = 0;
-        int size = 10;
-        String sort = "name";
-        boolean ascending = true;
-
-        BrandEntity brandEntity = new BrandEntity();
-        brandEntity.setId(1L);
-        brandEntity.setName("Test Brand");
-        brandEntity.setDescription("Test Description");
-
-        List<BrandEntity> brandEntities = List.of(brandEntity);
-        Page<BrandEntity> pageResult = new PageImpl<>(brandEntities);
-
-        when(iBrandRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sort))))
-                .thenReturn(pageResult);
-        when(iBrandEntityMapper.toBrand(brandEntity))
-                .thenReturn(new Brand(1L, "Test Brand", "Test Description"));
-
-        List<Brand> result = brandJpaAdapter.getBrands(page, size, sort, ascending);
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(1L, result.get(0).getId());
-        assertEquals("Test Brand", result.get(0).getName());
-        assertEquals("Test Description", result.get(0).getDescription());
-        verify(iBrandRepository).findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, sort)));
-        verify(iBrandEntityMapper).toBrand(brandEntity);
-    }
 
     @Test
     @DisplayName("Retrieve a brand by its ID")
@@ -157,5 +128,26 @@ class BrandJpaAdapterTest {
 
         assertThrows(EntityNotFoundException.class, () -> brandJpaAdapter.getBrandById(id));
         verify(iBrandRepository).findById(id);
+    }
+
+    @Test
+    @DisplayName("Test listBrand returns a paginated list of Brand")
+    void testListCategory() {
+
+        Brand brand = new Brand(1L, "Brand Name", "Brand Description");
+        BrandEntity brandEntity = new BrandEntity();
+        List<BrandEntity> brandEntities = List.of(brandEntity);
+        Page<BrandEntity> brandPage = new PageImpl<>(brandEntities, PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name")), 1);
+
+        when(iBrandRepository.findAll(any(PageRequest.class))).thenReturn(brandPage);
+        when(iBrandEntityMapper.toBrand(brandEntity)).thenReturn(brand);
+
+        PaginatedResult<Brand> result = brandJpaAdapter.getBrands(0, 10, "name", true);
+
+        assertEquals(1, result.getContent().size(), "The content size should be 1");
+        assertEquals(brand, result.getContent().get(0), "The article should match");
+        assertEquals(0, result.getPageNumber(), "The page number should be 0");
+        assertEquals(10, result.getPageSize(), "The page size should be 10");
+        assertEquals(1, result.getTotalElements(), "The total elements should be 1");
     }
 }

@@ -5,6 +5,7 @@ import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsExceptio
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
 import com.microservicio.stock.domain.util.Util;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -107,18 +107,30 @@ class CategoryUseCaseTest {
     }
 
     @Test
-    @DisplayName("Should return a list of categories")
-    void testGetCategories() {
-        List<Category> categories = new ArrayList<>();
-        categories.add(new Category(1L,"Electronics","Electronics"));
-        when(iCategoryPersistencePort.getCategories(0, 10, "name", true)).thenReturn(categories);
+    @DisplayName("Test listCategory returns a paginated result from the persistence port")
+    void testListCategory() {
+        Category category = new Category(1L, "categori Name", "categori Description");
+        PaginatedResult<Category> paginatedResult = new PaginatedResult<>(
+                List.of(category),
+                0,
+                10,
+                1
+        );
 
-        List<Category> retrievedCategories = categoryUseCase.getCategories(0, 10, "name", true);
+        when(iCategoryPersistencePort.getCategories(anyInt(), anyInt(), anyString(), anyBoolean())).thenReturn(paginatedResult);
 
-        assertNotNull(retrievedCategories);
-        assertEquals(1, retrievedCategories.size());
-        verify(iCategoryPersistencePort, times(1)).getCategories(0, 10, "name", true);
+        // Act
+        PaginatedResult<Category> result = categoryUseCase.getCategories(0, 10, "name", true);
+
+        // Assert
+        assertEquals(1, result.getContent().size(), "The content size should be 1");
+        assertEquals(category, result.getContent().get(0), "The article should match");
+        assertEquals(0, result.getPageNumber(), "The page number should be 0");
+        assertEquals(10, result.getPageSize(), "The page size should be 10");
+        assertEquals(1, result.getTotalElements(), "The total elements should be 1");
     }
+
+
 
 
 

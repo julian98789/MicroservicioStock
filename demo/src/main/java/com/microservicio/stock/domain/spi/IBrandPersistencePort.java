@@ -3,7 +3,6 @@ package com.microservicio.stock.domain.spi;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
-import java.util.List;
 
 public interface IBrandPersistencePort {
     Brand saveBrand(Brand brand);
