@@ -1,10 +1,10 @@
 package com.microservicio.stock.domain.api;
 
 import com.microservicio.stock.domain.model.Article;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
-import java.util.List;
 
 public interface IArticleServicePort {
     Article saveArticle(Article article);
-    List<Article> getArticles(int page, int size, String sort, boolean ascending);
+    PaginatedResult<Article> listArticles(int page, int size, String sortBy, boolean ascending);
 }

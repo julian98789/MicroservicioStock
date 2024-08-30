@@ -1,8 +1,10 @@
 package com.microservicio.stock.application.dto.articledto;
 
+import com.microservicio.stock.domain.util.Util;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,25 +12,26 @@ import java.util.List;
 @Getter
 @Setter
 public class ArticleRequest {
-    @NotBlank(message = "El nombre del artículo es obligatorio.")
-    @Size(min = 1, max = 50, message = "el tamaño debe estar entre 1 y 50 caracteres")
+    @NotBlank(message = Util.NAME_REQUIRED)
+    @Size(min = Util.NAME_MIN_VALUE, max = Util.NAME_MAX_VALUE, message = Util.NAME_SIZE)
     private String name;
 
-    @NotBlank(message = "La descripción es obligatoria.")
-    @Size(min = 1, max = 120, message = "el tamaño debe estar entre 1 y 120 caracteres.")
+    @NotBlank(message = Util.DESCRIPTION_REQUIRED)
+    @Size(min = Util.DESCRIPTION_MIN_VALUE, max = Util.DESCRIPTION_MAX_VALUE, message = Util.DESCRIPTION_SIZE)
     private String description;
 
-    @Min(value = 1, message = "La cantidad minima es 1.")
+    @Min(value = Util.ARTICLE_QUANTITY_MIN_VALUE, message = Util.ARTICLE_QUANTITY_MIN)
     private int quantity;
 
-    @NotNull(message = "El precio es obligatorio.")
-    @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0.")
+    @NotNull(message = Util.ARTICLE_PRICE_REQUIRED)
+    @DecimalMin(value = Util.ARTICLE_PRICE_MIN_VALUE, inclusive = false, message = Util.ARTICLE_PRICE_MIN)
     private BigDecimal price;
 
-    @NotNull(message = "El id del brand es obligatorio")
+    @NotNull(message = Util.ARTICLE_BRAND_ID_REQUIRED)
     private Long brandId;
 
-    @NotEmpty(message = "Debe proporcionar al menos una categoría.")
-    @Size(min = 1,max = 3, message = "El artículo debe tener entre 1 y 3 categorías")
+    @UniqueElements( message = Util.ARTICLE_CATEGORIES_UNIQUE)
+    @NotEmpty(message = Util.ARTICLE_CATEGORIES_REQUIRED)
+    @Size(min = Util.ARTICLE_CATEGORIES_MIN_VALUE,max = Util.ARTICLE_CATEGORIES_MAX_VALUE, message = Util.ARTICLE_CATEGORIES_SIZE)
     private List<Long> categoryIds;
 }

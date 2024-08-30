@@ -2,18 +2,22 @@ package com.microservicio.stock.application.handler.articlehandler;
 
 import com.microservicio.stock.application.dto.articledto.ArticleRequest;
 import com.microservicio.stock.application.dto.articledto.ArticleResponse;
+import com.microservicio.stock.application.dto.categorydto.CategoryRelationArticleResponse;
 import com.microservicio.stock.application.mapper.articlemapper.IArticleRequestMapper;
 import com.microservicio.stock.application.mapper.articlemapper.IArticleResponseMapper;
 import com.microservicio.stock.domain.api.IArticleServicePort;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
 import com.microservicio.stock.domain.spi.ICategoryPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -44,14 +48,33 @@ public class ArticleHandler implements IArticleHandler {
         return articleResponseMapper.toArticleResponseDto(savedArticle);
     }
 
-
-
     @Override
-    public List<ArticleResponse> listArticles(int page, int size, String sort, boolean ascending) {
-        List<Article> articles = articlePersistencePort.getArticles(page, size, sort, ascending);
+    public PaginatedResult<ArticleResponse> listArticles(int page, int size, String sortField, boolean ascending) {
+        PaginatedResult<Article> paginatedArticles = articlePersistencePort.listArticles(page, size, sortField, ascending);
 
-        return articles.stream()
-                .map(articleResponseMapper::toArticleResponseDto).toList();
+        List<ArticleResponse> articleResponses = paginatedArticles.getContent().stream()
+                .map(article -> {
+                    ArticleResponse articleResponse = articleResponseMapper.toArticleResponseDto(article);
+                    List<CategoryRelationArticleResponse> sortedCategories = articleResponse.getCategories().stream()
+                            .sorted(Comparator.comparing(CategoryRelationArticleResponse::getName))
+                            .toList();
+                    articleResponse.setCategories(sortedCategories);
+                    return articleResponse;
+                }).toList();
+
+        articleResponses = articleResponses.stream()
+                .sorted(Comparator.comparing((ArticleResponse articleResponse) -> articleResponse.getCategories().get(0).getName())
+                        .thenComparing(articleResponse -> articleResponse.getCategories().size()))
+                .toList();
+
+        return new PaginatedResult<>(
+                articleResponses,
+                paginatedArticles.getPageNumber(),
+                paginatedArticles.getPageSize(),
+                paginatedArticles.getTotalElements()
+        );
 
     }
+
+
 }

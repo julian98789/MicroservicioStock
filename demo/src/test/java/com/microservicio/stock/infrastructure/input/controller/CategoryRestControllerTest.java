@@ -2,41 +2,37 @@ package com.microservicio.stock.infrastructure.input.controller;
 
 import com.microservicio.stock.application.dto.categorydto.CategoriRequest;
 import com.microservicio.stock.application.dto.categorydto.CategoryResponse;
-import com.microservicio.stock.application.handler.categoryhandler.CategoryHandler;
 import com.microservicio.stock.application.handler.categoryhandler.ICategoryHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(CategoryRestController.class)
+
 class CategoryRestControllerTest {
 
-    @Autowired
+
     private MockMvc mockMvc;
 
     @Mock
-    private CategoryHandler categoryHandler;
-
-    @MockBean
     private ICategoryHandler iCategoryHandler;
 
     @InjectMocks
@@ -151,19 +147,35 @@ class CategoryRestControllerTest {
 
     }
 
-
     @Test
      void testGetCategories() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/category")
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setId(1L);
+        categoryResponse.setName("Category 1");
+        categoryResponse.setDescription("Description");
+
+        PaginatedResult<CategoryResponse> paginatedResultResponse = new PaginatedResult<>(
+                Collections.singletonList(categoryResponse),
+                0,
+                10,
+                1L
+        );
+
+        when(iCategoryHandler.getCategories(anyInt(), anyInt(), anyString(), anyBoolean())).thenReturn(paginatedResultResponse);
+
+        mockMvc.perform(get("/category")
                         .param("page", "0")
-                        .param("size", "2")
+                        .param("size", "10")
                         .param("sort", "name")
                         .param("ascending", "true"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Category 1"))
+                .andExpect(jsonPath("$.content[0].description").value("Description"))
+                .andExpect(jsonPath("$.pageNumber").value(0))
+                .andExpect(jsonPath("$.pageSize").value(10))
+                .andExpect(jsonPath("$.totalElements").value(1));
 
     }
-
-
 }

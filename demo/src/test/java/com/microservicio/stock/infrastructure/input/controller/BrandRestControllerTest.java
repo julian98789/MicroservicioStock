@@ -4,6 +4,7 @@ import com.microservicio.stock.application.dto.branddto.BrandRequest;
 import com.microservicio.stock.application.dto.branddto.BrandResponse;
 import com.microservicio.stock.application.handler.brandhandler.IBrandHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +13,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -140,17 +143,39 @@ class BrandRestControllerTest {
 
     }
 
-    @Test
-     void testGetBrands() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/brand")
+    @Test
+    @DisplayName("Should return a paginated list of brands successfully")
+     void testListBrand() throws Exception {
+
+        BrandResponse brandResponse = new BrandResponse();
+        brandResponse.setId(1L);
+        brandResponse.setName("Brand 1");
+        brandResponse.setDescription("Description");
+
+        PaginatedResult<BrandResponse> paginatedResultResponse = new PaginatedResult<>(
+                Collections.singletonList(brandResponse),
+                0,
+                10,
+                1L
+        );
+
+        when(iBrandHandler.getBrands(anyInt(), anyInt(), anyString(), anyBoolean())).thenReturn(paginatedResultResponse);
+
+        mockMvc.perform(get("/brand")
                         .param("page", "0")
-                        .param("size", "2")
+                        .param("size", "10")
                         .param("sort", "name")
                         .param("ascending", "true"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
-
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("Brand 1"))
+                .andExpect(jsonPath("$.content[0].description").value("Description"))
+                .andExpect(jsonPath("$.pageNumber").value(0))
+                .andExpect(jsonPath("$.pageSize").value(10))
+                .andExpect(jsonPath("$.totalElements").value(1));
     }
+
+
 
 }

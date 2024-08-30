@@ -3,6 +3,7 @@ package com.microservicio.stock.infrastructure.input.controller;
 import com.microservicio.stock.application.dto.categorydto.CategoriRequest;
 import com.microservicio.stock.application.dto.categorydto.CategoryResponse;
 import com.microservicio.stock.application.handler.categoryhandler.ICategoryHandler;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/category")
@@ -81,12 +81,16 @@ public class CategoryRestController {
             )
     })
 
-    public List<CategoryResponse> getCategories(
+    public ResponseEntity<PaginatedResult<CategoryResponse>> getCategories(
             @RequestParam(defaultValue = "0") @Min(0) int page,
-            @RequestParam(defaultValue = "10") @Min(1)int size,
-            @RequestParam(defaultValue = "name") @NotBlank @Size(min = 1)String sort,
+            @RequestParam(defaultValue = "10") @Min(1) int size,
+            @RequestParam(defaultValue = "name") @NotBlank @Size(min = 1) String sort,
             @RequestParam(defaultValue = "true") boolean ascending) {
-        return iCategoryHandler.getCategories(page, size, sort, ascending);
+
+        PaginatedResult<CategoryResponse> paginatedResult = iCategoryHandler.getCategories(page, size, sort, ascending);
+
+        return new ResponseEntity<>(paginatedResult, HttpStatus.OK);
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.microservicio.stock.infrastructure.output.jpa.adapter;
 
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.infrastructure.output.jpa.entity.CategoryEntity;
 import com.microservicio.stock.infrastructure.output.jpa.mapper.ICategoryEntityMapper;
 import com.microservicio.stock.infrastructure.output.jpa.repository.ICategoryRepository;
@@ -32,23 +33,29 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     }
 
     @Override
-    public List<Category> getCategories(int page, int size, String sort, boolean ascending) {
+    public PaginatedResult<Category> getCategories(int page, int size, String sort, boolean ascending) {
         Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sort));
 
         Page<CategoryEntity> categoryEntities = iCategoryRepository.findAll(pageRequest);
 
-        return categoryEntities.stream()
-                .map(iCategoryEntityMapper::toCategory).toList();
+        List<Category> categories = categoryEntities.stream()
+                .map(iCategoryEntityMapper::toCategory)
+                .toList();
 
+        return new PaginatedResult<>(
+                categories,
+                categoryEntities.getNumber(),
+                categoryEntities.getSize(),
+                categoryEntities.getTotalElements()
+        );
     }
 
     @Override
     public List<Category> getCategoriesByIds(List<Long> ids) {
         List<CategoryEntity> categoryEntities = iCategoryRepository.findAllById(ids);
 
-        // Convierte las entidades de categoría a modelos de dominio
         return categoryEntities.stream()
                 .map(iCategoryEntityMapper::toCategory).toList();
 

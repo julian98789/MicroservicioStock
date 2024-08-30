@@ -2,14 +2,10 @@ package com.microservicio.stock.domain.usecase;
 
 import com.microservicio.stock.domain.api.IArticleServicePort;
 import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.RepeatedCategoryException;
 import com.microservicio.stock.domain.model.Article;
-import com.microservicio.stock.domain.model.Category;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import com.microservicio.stock.domain.spi.IArticlePersistencePort;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.microservicio.stock.domain.util.Util;
 
 public class ArticleUseCase implements IArticleServicePort {
 
@@ -21,23 +17,16 @@ public class ArticleUseCase implements IArticleServicePort {
 
     @Override
     public Article saveArticle(Article article) {
-        validateUniqueCategories(article.getCategories());
         if (articlePersistencePort.existsByName(article.getName())) {
-            throw new NameAlreadyExistsException("el article '" +article.getName()+"' ya existe");
+            throw new NameAlreadyExistsException(Util.ARTICLE_NAME_ALREADY_EXISTS);
         }
         return articlePersistencePort.saveArticle(article);
     }
 
     @Override
-    public List<Article> getArticles(int page, int size, String sort, boolean ascending) {
-        return articlePersistencePort.getArticles(page, size, sort, ascending);
+    public PaginatedResult<Article> listArticles(int page, int size, String sortBy, boolean ascending) {
+        return articlePersistencePort.listArticles(page, size, sortBy, ascending);
     }
 
-    private void validateUniqueCategories(List<Category> categories) {
-        Set<Category> uniqueCategories = new HashSet<>(categories);
 
-        if (uniqueCategories.size() != categories.size()) {
-            throw new RepeatedCategoryException("La lista de categorías contiene elementos duplicados.");
-        }
-    }
 }

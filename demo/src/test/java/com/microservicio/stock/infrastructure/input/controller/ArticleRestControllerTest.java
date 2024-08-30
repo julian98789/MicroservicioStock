@@ -4,7 +4,9 @@ package com.microservicio.stock.infrastructure.input.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservicio.stock.application.dto.articledto.ArticleRequest;
 import com.microservicio.stock.application.dto.articledto.ArticleResponse;
+import com.microservicio.stock.application.dto.branddto.BrandResponse;
 import com.microservicio.stock.application.handler.articlehandler.IArticleHandler;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +20,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 
@@ -126,4 +130,51 @@ class ArticleRestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("Should successfully list articles and return HTTP 200")
+    void testListArticles() throws Exception {
+        // Dado
+        BrandResponse brandResponse = new BrandResponse();
+        brandResponse.setId(1L);
+        brandResponse.setName("Brand Name");
+        brandResponse.setDescription("Brand Description");
+
+        ArticleResponse articleResponse = new ArticleResponse();
+        articleResponse.setId(1L);
+        articleResponse.setName("Article Name");
+        articleResponse.setDescription("Article Description");
+        articleResponse.setQuantity(10);
+        articleResponse.setPrice(BigDecimal.valueOf(100.00));
+        articleResponse.setBrand(brandResponse);
+        articleResponse.setCategories(new ArrayList<>());
+
+        PaginatedResult<ArticleResponse> paginatedResult = new PaginatedResult<>(
+                List.of(articleResponse),
+                0,
+                10,
+                1
+        );
+
+        // Cuando
+        when(articleHandler.listArticles(anyInt(), anyInt(), anyString(), anyBoolean())).thenReturn(paginatedResult);
+
+        // Entonces
+        mockMvc.perform(MockMvcRequestBuilders.get("/article")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "name")
+                        .param("ascending", "true")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content.length()").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].name").value("Article Name"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].description").value("Article Description"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].brand.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].brand.name").value("Brand Name"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].brand.description").value("Brand Description"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageNumber").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(1));
+    }
 }

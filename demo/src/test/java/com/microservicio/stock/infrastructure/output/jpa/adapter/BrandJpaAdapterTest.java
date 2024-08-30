@@ -1,0 +1,153 @@
+package com.microservicio.stock.infrastructure.output.jpa.adapter;
+
+import com.microservicio.stock.domain.model.Brand;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
+import com.microservicio.stock.infrastructure.output.jpa.entity.BrandEntity;
+import com.microservicio.stock.infrastructure.output.jpa.mapper.IBrandEntityMapper;
+import com.microservicio.stock.infrastructure.output.jpa.repository.IBrandRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+class BrandJpaAdapterTest {
+
+    @Mock
+    private IBrandRepository iBrandRepository;
+
+    @Mock
+    private IBrandEntityMapper iBrandEntityMapper;
+
+    @InjectMocks
+    private BrandJpaAdapter brandJpaAdapter;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+    @Test
+    @DisplayName("Save a brand and return the saved brand")
+    void saveBrand_shouldSaveAndReturnBrand() {
+        Long id = 1L;
+        String name = "Test Brand";
+        String description = "Test Description";
+        Brand brand = new Brand(id, name, description);
+        BrandEntity brandEntity = new BrandEntity();
+        BrandEntity savedBrandEntity = new BrandEntity();
+        savedBrandEntity.setId(id);
+        savedBrandEntity.setName(name);
+        savedBrandEntity.setDescription(description);
+
+        when(iBrandEntityMapper.toEntity(brand)).thenReturn(brandEntity);
+        when(iBrandRepository.save(brandEntity)).thenReturn(savedBrandEntity);
+        when(iBrandEntityMapper.toBrand(savedBrandEntity)).thenReturn(new Brand(id, name, description));
+
+        Brand result = brandJpaAdapter.saveBrand(brand);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals(name, result.getName());
+        assertEquals(description, result.getDescription());
+        verify(iBrandEntityMapper).toEntity(brand);
+        verify(iBrandRepository).save(brandEntity);
+        verify(iBrandEntityMapper).toBrand(savedBrandEntity);
+    }
+
+    @Test
+    @DisplayName("Check existence of a brand by name when it exists")
+    void existsByName_shouldReturnTrueIfBrandExists() {
+        String name = "Existing Brand";
+
+        when(iBrandRepository.findByName(name)).thenReturn(Optional.of(new BrandEntity()));
+
+        boolean result = brandJpaAdapter.existsByName(name);
+
+        assertTrue(result);
+        verify(iBrandRepository).findByName(name);
+    }
+
+    @Test
+    @DisplayName("Check existence of a brand by name when it does not exist")
+    void existsByName_shouldReturnFalseIfBrandDoesNotExist() {
+        String name = "Nonexistent Brand";
+
+        when(iBrandRepository.findByName(name)).thenReturn(Optional.empty());
+
+        boolean result = brandJpaAdapter.existsByName(name);
+
+        assertFalse(result);
+        verify(iBrandRepository).findByName(name);
+    }
+
+
+    @Test
+    @DisplayName("Retrieve a brand by its ID")
+    void getBrandById_shouldReturnBrandIfExists() {
+        Long id = 1L;
+        BrandEntity brandEntity = new BrandEntity();
+        brandEntity.setId(id);
+        brandEntity.setName("Test Brand");
+        brandEntity.setDescription("Test Description");
+
+        Brand brand = new Brand(id, "Test Brand", "Test Description");
+
+        when(iBrandRepository.findById(id)).thenReturn(Optional.of(brandEntity));
+        when(iBrandEntityMapper.toBrand(brandEntity)).thenReturn(brand);
+
+        Brand result = brandJpaAdapter.getBrandById(id);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals("Test Brand", result.getName());
+        assertEquals("Test Description", result.getDescription());
+        verify(iBrandRepository).findById(id);
+        verify(iBrandEntityMapper).toBrand(brandEntity);
+    }
+
+    @Test
+    @DisplayName("Retrieve a brand by its ID should throw exception if not found")
+    void getBrandById_shouldThrowExceptionIfNotFound() {
+        Long id = 1L;
+
+        when(iBrandRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> brandJpaAdapter.getBrandById(id));
+        verify(iBrandRepository).findById(id);
+    }
+
+    @Test
+    @DisplayName("Test listBrand returns a paginated list of Brand")
+    void testListCategory() {
+
+        Brand brand = new Brand(1L, "Brand Name", "Brand Description");
+        BrandEntity brandEntity = new BrandEntity();
+        List<BrandEntity> brandEntities = List.of(brandEntity);
+        Page<BrandEntity> brandPage = new PageImpl<>(brandEntities, PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name")), 1);
+
+        when(iBrandRepository.findAll(any(PageRequest.class))).thenReturn(brandPage);
+        when(iBrandEntityMapper.toBrand(brandEntity)).thenReturn(brand);
+
+        PaginatedResult<Brand> result = brandJpaAdapter.getBrands(0, 10, "name", true);
+
+        assertEquals(1, result.getContent().size(), "The content size should be 1");
+        assertEquals(brand, result.getContent().get(0), "The article should match");
+        assertEquals(0, result.getPageNumber(), "The page number should be 0");
+        assertEquals(10, result.getPageSize(), "The page size should be 10");
+        assertEquals(1, result.getTotalElements(), "The total elements should be 1");
+    }
+}

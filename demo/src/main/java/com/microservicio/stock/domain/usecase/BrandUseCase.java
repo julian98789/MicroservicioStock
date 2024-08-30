@@ -4,8 +4,9 @@ import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsExceptio
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.api.IBrandServicePort;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
+import com.microservicio.stock.domain.util.Util;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 
-import java.util.List;
 
 public class BrandUseCase implements IBrandServicePort {
 
@@ -18,7 +19,7 @@ public class BrandUseCase implements IBrandServicePort {
     @Override
     public Brand saveBrand(Brand brand) {
         if (iBrandPersistencePort.existsByName(brand.getName())) {
-            throw new NameAlreadyExistsException("La marca '" +brand.getName()+"' ya existe");
+            throw new NameAlreadyExistsException(Util.BRAND_NAME_ALREADY_EXISTS);
         }
         return iBrandPersistencePort.saveBrand(brand);
     }
@@ -29,7 +30,7 @@ public class BrandUseCase implements IBrandServicePort {
     }
 
     @Override
-    public List<Brand> getBrands(int page, int size, String sort, boolean ascending) {
+    public PaginatedResult<Brand> getBrands(int page, int size, String sort, boolean ascending) {
         return iBrandPersistencePort.getBrands(page, size, sort, ascending);
     }
 

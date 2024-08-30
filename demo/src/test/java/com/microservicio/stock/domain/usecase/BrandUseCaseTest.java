@@ -3,6 +3,8 @@ package com.microservicio.stock.domain.usecase;
 import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.spi.IBrandPersistencePort;
+import com.microservicio.stock.domain.util.Util;
+import com.microservicio.stock.domain.util.pagination.PaginatedResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,24 +67,12 @@ class BrandUseCaseTest {
 
 
         // Entonces
-        assertEquals("La marca '" + brand.getName() + "' ya existe", exception.getMessage());
+        assertEquals(Util.BRAND_NAME_ALREADY_EXISTS, exception.getMessage());
         verify(iBrandPersistencePort, times(1)).existsByName(brand.getName());
         verify(iBrandPersistencePort, never()).saveBrand(any(Brand.class));
     }
 
-    @Test
-    @DisplayName("Should return a list of brand")
-    void testGetBrands() {
-        List<Brand> brands = new ArrayList<>();
-        brands.add(new Brand(1L,"Electronics","Electronics"));
-        when(iBrandPersistencePort.getBrands(0, 10, "name", true)).thenReturn(brands);
 
-        List<Brand> retrievedBrands = brandUseCase.getBrands(0, 10, "name", true);
-
-        assertNotNull(retrievedBrands);
-        assertEquals(1, retrievedBrands.size());
-        verify(iBrandPersistencePort, times(1)).getBrands(0, 10, "name", true);
-    }
 
     @Test
     @DisplayName("Should return true if brand name exists")
@@ -113,6 +102,30 @@ class BrandUseCaseTest {
         // Entonces
         assertFalse(exists);
         verify(iBrandPersistencePort, times(1)).existsByName(name);
+    }
+
+    @Test
+    @DisplayName("Test listBrand returns a paginated result from the persistence port")
+    void testListBrand() {
+        Brand brand = new Brand(1L, "brand Name", "brand Description");
+        PaginatedResult<Brand> paginatedResult = new PaginatedResult<>(
+                List.of(brand),
+                0,
+                10,
+                1
+        );
+
+        when(iBrandPersistencePort.getBrands(anyInt(), anyInt(), anyString(), anyBoolean())).thenReturn(paginatedResult);
+
+
+        PaginatedResult<Brand> result = brandUseCase.getBrands(0, 10, "name", true);
+
+
+        assertEquals(1, result.getContent().size(), "The content size should be 1");
+        assertEquals(brand, result.getContent().get(0), "The article should match");
+        assertEquals(0, result.getPageNumber(), "The page number should be 0");
+        assertEquals(10, result.getPageSize(), "The page size should be 10");
+        assertEquals(1, result.getTotalElements(), "The total elements should be 1");
     }
 
 

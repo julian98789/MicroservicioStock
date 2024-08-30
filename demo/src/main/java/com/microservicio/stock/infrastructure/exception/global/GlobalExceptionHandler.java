@@ -1,7 +1,6 @@
 package com.microservicio.stock.infrastructure.exception.global;
 
 import com.microservicio.stock.domain.exception.custom.NameAlreadyExistsException;
-import com.microservicio.stock.domain.exception.custom.RepeatedCategoryException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +14,6 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-
-    @ExceptionHandler(RepeatedCategoryException.class)
-    public ResponseEntity<String> repeatedCategoryException(RepeatedCategoryException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
 
 
     @ExceptionHandler(NameAlreadyExistsException.class)
